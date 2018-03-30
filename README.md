@@ -25,4 +25,4 @@
 - [Trellis plot](https://bl.ocks.org/nehabandal/367f52d2e32794d01bfd61c9416fcf9a/9c0207cbd3527bc263a93bda50a7f0d9adb1368d)
 - [Reference for Trellis Chart](http://blockbuilder.org/elt12njo/76b484f5187c7ecfc83070dd81897327)
 - [Parallel coordinates](https://bl.ocks.org/nehabandal/a6864b28ef38713dd4c40823ec4a2673/a4e92197fcf5db47070d28080c66dd9e7c4b5f38)
-- [Reference for Trellis Chart](http://blockbuilder.org/jasondavies/1341281)
+- [Reference for Parallel coordinates](http://blockbuilder.org/jasondavies/1341281)
