@@ -1,4 +1,7 @@
-## Welcome to Ted Talks Timeline 
-**Created By**
-**Neha Bandal**
-**Gauri Joshi**
+## Welcome to Ted Talks Timeline
+
+**Created By:**
+
+  **Neha Bandal**
+ 
+  **Gauri Joshi**
