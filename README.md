@@ -2,6 +2,6 @@
 
 **Created By:**
 
-  **Neha Bandal**
+ *Neha Bandal*
  
-  **Gauri Joshi**
+ *Gauri Joshi*
