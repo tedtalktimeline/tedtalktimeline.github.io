@@ -119,7 +119,10 @@
                     speaker: d.main_speaker,
                     comments: +d.comments,
                     title: d.title,
-                    duration: +d.duration_min
+                    url: d.url,
+                    eventdata: d.event,
+                    duration: +d.duration_min,
+                    ratings: d.ratings
                 });
             })
             return newData;
@@ -156,7 +159,10 @@
                             speaker: '',
                             comments: 0,
                             title: '',
-                            duration: 0
+                            url: '',
+                            eventdata:'',
+                            duration: 0,
+                            ratings: ''
                         })
                     }
                 }
@@ -213,6 +219,7 @@
         function drawParallelCoordinates(key) {
             filterData = filteredData.filter(function (data) {
                 return data.occupation == key
+                // console.log(data.url);
             });
 
             var margin = {
@@ -275,6 +282,17 @@
                     description: "Year",
                     type: types["String"]
                 },
+                // {
+                //     key: "url",
+                //     description: "Url",
+                //     type: types["String"],
+                //     // axis: d3.axisRight()
+                //     //     .tickFormat(function (d, i) {
+                //     //         if (d == null) return "(null)";
+                //     //         return i % 5 == 0 ? d.slice(0, 22) : "";
+                //     //     })
+                //
+                // },
                 {
                     key: "view",
                     type: types["Number"],
@@ -296,14 +314,25 @@
                     scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
                 {
-                    key: "title",
-                    description: "Title",
-                    type: types["String"],
-                    axis: d3.axisLeft()
-                        .tickFormat(function (d, i) {
-                            return d;
-                        })
+                  key: "eventdata",
+                  description: "Event",
+                  type: types["String"],
+                  axis: d3.axisRight()
+                     .tickFormat(function (d, i) {
+                         if (d == null) return "(null)";
+                         return i % 5 == 0 ? d.slice(0, 22) : "";
+                     })
+
                 }
+                // {
+                //     key: "title",
+                //     description: "Title",
+                //     type: types["String"],
+                //     // axis: d3.axisLeft()
+                //     //     .tickFormat(function (d, i) {
+                //     //         return d;
+                //     //     })
+                // }
             ];
 
             var xscale = d3.scalePoint()
@@ -338,33 +367,62 @@
             ctx.lineWidth = 1.5;
             ctx.scale(devicePixelRatio, devicePixelRatio);
 
-            var output = d3.select("#area2").append("pre").attr("id", "parallelText");
+            var output = d3.select("#area2").append("pre");
+            var tooltip = d3.select("#area2").append("div")
+                .attr("class", "tooltip");
 
             var axes = svg.selectAll(".axis")
                 .data(dimensions)
                 .enter().append("g")
-                .attr("class", function (d) {
-                    return "axis " + d.key.replace(/ /g, "_");
-                })
-                .attr("transform", function (d, i) {
-                    return "translate(" + xscale(i) + ")";
-                });
+                .attr("class", function (d) { return "axis " + d.key.replace(/ /g, "_"); })
+                .attr("transform", function (d, i) { return "translate(" + xscale(i) + ")"; })
 
             // shuffle the data!
             data = d3.shuffle(filterData);
-
+            allUrl = []
+            var map1 = new Map();
             data.forEach(function (d) {
                 dimensions.forEach(function (p) {
                     d[p.key] = !d[p.key] ? null : p.type.coerce(d[p.key]);
+                     map1.set(d['url'],d['title']);
                 });
 
                 // truncate long text strings to fit in data table
                 for (var key in d) {
-                    if (d[key] && d[key].length > 35) d[key] = d[key].slice(0, 36);
+                    if (d[key] && d[key].length > 35) d[key] = d[key].slice(0, 1000);
+
                 }
             });
 
+          // console.log(allUrl);
+          // allUrl.forEach(function (urltest) {
+          //   openVideo(urltest)
+          //   // console.log(urltest);
+          // });
+          // console.log(map1.size)
+
+          // var value;
+          // Object.keys(map).forEach(function(key) {
+          //     value = map[key];
+          //     console.log(value);
+          // });
+
+          map1.forEach(function (item, key, mapObj) {
+            openVideo(key,item)
+            drawBarChart(item)
+
+              // console.log(item.toString() + "<br />");
+          });
+
+          var stack = d3.stack()
+              .keys(allUrl)
+              .order(d3.stackOrderNone)
+              .offset(d3.stackOffsetWiggle);
+          //
+          var series = stack(filterData);
+
             // type/dimension default setting happens here
+
             dimensions.forEach(function (dim) {
                 if (!("domain" in dim)) {
                     // detect domain using dimension type's extent function
@@ -374,10 +432,13 @@
                 }
                 if (!("scale" in dim)) {
                     // use type's default scale for dimension
-                    dim.scale = dim.type.defaultScale.copy();
+                     dim.scale = dim.type.defaultScale.copy();
                 }
                 dim.scale.domain(dim.domain);
+
+
             });
+
 
             var render = renderQueue(draw).rate(50);
 
@@ -396,9 +457,8 @@
                 .append("text")
                 .attr("class", "title")
                 .attr("text-anchor", "start")
-                .text(function (d) {
-                    return "description" in d ? d.description : d.key;
-                });
+                .text(function (d) { return "description" in d ? d.description : d.key; })
+
 
             // Add and store a brush for each axis.
             axes.append("g")
@@ -412,16 +472,49 @@
                         .on("start", brushstart)
                         .on("brush", brush)
                         .on("end", brush)
+
                     )
                 })
                 .selectAll("rect")
                 .attr("x", -8)
-                .attr("width", 16);
+                .attr("width", 16)
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout);
+
 
             d3.selectAll(".axis.occupation .tick text")
                 .style("fill", color);
 
-            output.text(d3.tsvFormat(data.slice(0, 24)));
+
+          // d3.selectAll(".axis text")
+
+
+          var projection = svg.selectAll(".background path,.foreground path")
+                    .on("mouseover", mouseover)
+                    .on("mouseout", mouseout);
+
+
+            function mouseover(d) {
+
+            // svg.classed("active", true);
+
+            console.log(d)
+
+          }
+
+          function mouseout(d) {
+            svg.classed("active", false);
+            projection.classed("inactive", false);
+            axes.classed("inactive", false);
+          }
+
+          function moveToFront() {
+            this.parentNode.appendChild(this);
+          }
+
+            output.text(d3.tsvFormat(data.slice(0, 100)));
+
+            // console.log(data.url);
 
             function project(d) {
                 return dimensions.map(function (p, i) {
@@ -435,7 +528,7 @@
             };
 
             function draw(d) {
-                ctx.strokeStyle = color(d.food_group);
+                ctx.strokeStyle = color(d.speaker);
                 ctx.beginPath();
                 var coords = project(d);
                 coords.forEach(function (p, i) {
@@ -465,6 +558,7 @@
                     }
 
                     ctx.lineTo(p[0], p[1]);
+
                 });
                 ctx.stroke();
             }
@@ -483,13 +577,16 @@
                         return d3.brushSelection(this);
                     })
                     .each(function (d) {
+                      // if (dim.key == 'url') testUrls.push(d[dim.key]);
                         actives.push({
                             dimension: d,
                             extent: d3.brushSelection(this)
-                        });
-                    });
+                        })
+                    })
 
+                  testUrls = []
                 var selected = data.filter(function (d) {
+                    // console.log(selected)
                     if (actives.every(function (active) {
                             var dim = active.dimension;
                             // test if point is within extents for each active brush
@@ -499,11 +596,17 @@
                     }
                 });
 
+                // testUrls.forEach(function (urltest) {
+                //   openVideo(urltest)
+                //   // console.log(urltest);
+                // });
+
                 ctx.clearRect(0, 0, width, height);
                 ctx.globalAlpha = d3.min([0.85 / Math.pow(selected.length, 0.3), 1]);
                 render(selected);
-
-                output.text(d3.tsvFormat(selected.slice(0, 24)));
+                // console.log(selected.speaker)
+                output.text(d3.tsvFormat(selected.slice(0, 100)));
+                // console.log(output.text(d3.tsvFormat(selected.slice(0, 24))))
             }
 
             function d3_functor(v) {
@@ -659,7 +762,7 @@
                     // console.log(selected);
                   //  d3.select("#the_SVG_ID").remove();
                     //drawBarChart(selected);
-                    drawParallelCoordinates(selected);
+                    drawParallelCoordinates(selected,mqpdata);
                 })
         }
     </script>
