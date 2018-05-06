@@ -81,7 +81,7 @@
     }
 
     pre {
-        width: 90%;
+        width: 80%;
         height: 200px;
         margin: 30px 100px;
         tab-size: 50;
@@ -160,7 +160,7 @@
                             comments: 0,
                             title: '',
                             url: '',
-                            eventdata:'',
+                            eventdata: '',
                             duration: 0,
                             ratings: ''
                         })
@@ -228,7 +228,7 @@
                     bottom: 20,
                     left: 100
                 },
-                width = 1600 - margin.left - margin.right,
+                width = screen.width - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom,
                 innerHeight = height - 2;
 
@@ -314,14 +314,14 @@
                     scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
                 {
-                  key: "eventdata",
-                  description: "Event",
-                  type: types["String"],
-                  axis: d3.axisRight()
-                     .tickFormat(function (d, i) {
-                         if (d == null) return "(null)";
-                         return i % 5 == 0 ? d.slice(0, 22) : "";
-                     })
+                    key: "eventdata",
+                    description: "Event",
+                    type: types["String"],
+                    axis: d3.axisRight()
+                        .tickFormat(function (d, i) {
+                            if (d == null) return "(null)";
+                            return i % 5 == 0 ? d.slice(0, 22) : "";
+                        })
 
                 }
                 // {
@@ -367,15 +367,19 @@
             ctx.lineWidth = 1.5;
             ctx.scale(devicePixelRatio, devicePixelRatio);
 
-            var output = d3.select("#area2").append("pre");
+            var output = d3.select("#area2").append("pre").attr("id", "parallelText");
             var tooltip = d3.select("#area2").append("div")
                 .attr("class", "tooltip");
 
             var axes = svg.selectAll(".axis")
                 .data(dimensions)
                 .enter().append("g")
-                .attr("class", function (d) { return "axis " + d.key.replace(/ /g, "_"); })
-                .attr("transform", function (d, i) { return "translate(" + xscale(i) + ")"; })
+                .attr("class", function (d) {
+                    return "axis " + d.key.replace(/ /g, "_");
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(" + xscale(i) + ")";
+                })
 
             // shuffle the data!
             data = d3.shuffle(filterData);
@@ -384,7 +388,7 @@
             data.forEach(function (d) {
                 dimensions.forEach(function (p) {
                     d[p.key] = !d[p.key] ? null : p.type.coerce(d[p.key]);
-                     map1.set(d['url'],d['title']);
+                    map1.set(d['url'], d['title']);
                 });
 
                 // truncate long text strings to fit in data table
@@ -394,32 +398,32 @@
                 }
             });
 
-          // console.log(allUrl);
-          // allUrl.forEach(function (urltest) {
-          //   openVideo(urltest)
-          //   // console.log(urltest);
-          // });
-          // console.log(map1.size)
+            // console.log(allUrl);
+            // allUrl.forEach(function (urltest) {
+            //   openVideo(urltest)
+            //   // console.log(urltest);
+            // });
+            // console.log(map1.size)
 
-          // var value;
-          // Object.keys(map).forEach(function(key) {
-          //     value = map[key];
-          //     console.log(value);
-          // });
+            // var value;
+            // Object.keys(map).forEach(function(key) {
+            //     value = map[key];
+            //     console.log(value);
+            // });
 
-          map1.forEach(function (item, key, mapObj) {
-            openVideo(key,item)
-            drawBarChart(item)
+            map1.forEach(function (item, key, mapObj) {
+                openVideo(key, item)
+                drawBarChart(item)
 
-              // console.log(item.toString() + "<br />");
-          });
+                // console.log(item.toString() + "<br />");
+            });
 
-          var stack = d3.stack()
-              .keys(allUrl)
-              .order(d3.stackOrderNone)
-              .offset(d3.stackOffsetWiggle);
-          //
-          var series = stack(filterData);
+            var stack = d3.stack()
+                .keys(allUrl)
+                .order(d3.stackOrderNone)
+                .offset(d3.stackOffsetWiggle);
+            //
+            var series = stack(filterData);
 
             // type/dimension default setting happens here
 
@@ -432,7 +436,7 @@
                 }
                 if (!("scale" in dim)) {
                     // use type's default scale for dimension
-                     dim.scale = dim.type.defaultScale.copy();
+                    dim.scale = dim.type.defaultScale.copy();
                 }
                 dim.scale.domain(dim.domain);
 
@@ -457,7 +461,9 @@
                 .append("text")
                 .attr("class", "title")
                 .attr("text-anchor", "start")
-                .text(function (d) { return "description" in d ? d.description : d.key; })
+                .text(function (d) {
+                    return "description" in d ? d.description : d.key;
+                })
 
 
             // Add and store a brush for each axis.
@@ -486,31 +492,31 @@
                 .style("fill", color);
 
 
-          // d3.selectAll(".axis text")
+            // d3.selectAll(".axis text")
 
 
-          var projection = svg.selectAll(".background path,.foreground path")
-                    .on("mouseover", mouseover)
-                    .on("mouseout", mouseout);
+            var projection = svg.selectAll(".background path,.foreground path")
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout);
 
 
             function mouseover(d) {
 
-            // svg.classed("active", true);
+                // svg.classed("active", true);
 
-            console.log(d)
+                console.log(d)
 
-          }
+            }
 
-          function mouseout(d) {
-            svg.classed("active", false);
-            projection.classed("inactive", false);
-            axes.classed("inactive", false);
-          }
+            function mouseout(d) {
+                svg.classed("active", false);
+                projection.classed("inactive", false);
+                axes.classed("inactive", false);
+            }
 
-          function moveToFront() {
-            this.parentNode.appendChild(this);
-          }
+            function moveToFront() {
+                this.parentNode.appendChild(this);
+            }
 
             output.text(d3.tsvFormat(data.slice(0, 100)));
 
@@ -577,14 +583,14 @@
                         return d3.brushSelection(this);
                     })
                     .each(function (d) {
-                      // if (dim.key == 'url') testUrls.push(d[dim.key]);
+                        // if (dim.key == 'url') testUrls.push(d[dim.key]);
                         actives.push({
                             dimension: d,
                             extent: d3.brushSelection(this)
                         })
                     })
 
-                  testUrls = []
+                testUrls = []
                 var selected = data.filter(function (d) {
                     // console.log(selected)
                     if (actives.every(function (active) {
@@ -651,12 +657,102 @@
             });
         }
 
+        function drawBarChart(key) {
+            console.log(key);
+            selectData = filteredData.filter(function (data) {
+                return data.occupation == key
+            });
+            console.log(selectData);
+            var margin = {
+                    top: 30,
+                    right: 20,
+                    bottom: 200,
+                    left: 80
+                },
+                width = screen.width - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+            var x = d3.scaleBand()
+                .range([0, width], .1);
+            var y = d3.scaleLinear()
+                .range([height, 0]);
+            var xAxis = d3.axisBottom(x);
+            var yAxis = d3.axisLeft(y)
+                .ticks(10);
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            x.domain(selectData.map(function (d) {
+                    return d.speaker;
+                }))
+                .paddingInner(0.1)
+                .paddingOuter(0.5);
+            y.domain([0, d3.max(selectData, function (d) {
+                return d.comments;
+            })]);
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "15px")
+                .attr("transform", "rotate(-45)");
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .text("Comments")
+                .style("text-anchor", "end")
+                .selectAll("text")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "10px");
+            svg.selectAll(".bar")
+                .data(selectData)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) {
+                    return x(d.speaker);
+                })
+                .attr("width", x.bandwidth())
+                .attr("y", function (d) {
+                    return y(d.comments);
+                })
+                .attr("height", function (d) {
+                    return height - y(d.comments);
+                });
+        }
+
+
+        function openVideo(key, value) {
+            if (value != null && key != null) {
+                // console.log(actives);
+                var svg = d3.select("body").append("svg")
+                    .attr("width", screen.width)
+                    .attr("height", 200);
+                svg.append("foreignObject")
+                    .attr("width", 480)
+                    .attr("height", 500)
+                    .append("xhtml:body")
+                    .style("font", "14px 'Helvetica Neue'")
+                    .html("<a href='" + key + "'>" + value + "</a>");
+            }
+        }
+
         function buildStreamGraph(mqpdata) {
             var data = mqpdata;
 
             var stack = d3.stack()
                 .keys(["Architect", "Artist", "Designer", "Engineer", "Entrepreneur", "Inventor", "Musician",
-                    "Photographer", "Writer", "Actor", "Activist", "Physicist"])
+                    "Photographer", "Writer", "Actor", "Activist", "Physicist"
+                ])
                 .order(d3.stackOrderNone)
                 .offset(d3.stackOffsetWiggle);
 
@@ -669,7 +765,7 @@
                     bottom: 10,
                     left: 100
                 },
-                width = 1600 - margin.left - margin.right,
+                width = screen.width - margin.left - margin.right,
                 height = 600 - margin.top - margin.bottom;
 
             // var width = 1200,
@@ -679,7 +775,7 @@
                 .domain(d3.extent(data, function (d) {
                     return d.month;
                 }))
-                .range([100, width-50]);
+                .range([100, width - 50]);
 
             // setup axis
             var xAxis = d3.axisBottom(x);
@@ -752,17 +848,17 @@
                 })
                 .on('click', function (d) {
                     var selected = d.key;
-                    if(d3.select("#parallelSVG")) {
+                    if (d3.select("#parallelSVG")) {
                         d3.select("#parallelSVG").remove();
                         d3.select("#parallelText").remove();
                     }
 
-                  //  console.log(selected);
-                 //   tooltip.remove();
+                    //  console.log(selected);
+                    //   tooltip.remove();
                     // console.log(selected);
-                  //  d3.select("#the_SVG_ID").remove();
+                    //  d3.select("#the_SVG_ID").remove();
                     //drawBarChart(selected);
-                    drawParallelCoordinates(selected,mqpdata);
+                    drawParallelCoordinates(selected, mqpdata);
                 })
         }
     </script>
