@@ -3,6 +3,7 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://bl.ocks.org/syntagmatic/raw/3341641/render-queue.js"></script>
     <h1 align="center">Ted Talk Timeline</h1>
@@ -24,9 +25,9 @@
     }
 
     .axis .title {
-        font-size: 10px;
+        font-size: 15px;
         transform: rotate(-21deg) translate(-5px, -6px);
-        fill: #222;
+        fill: #000000;
     }
 
     .axis line,
@@ -80,25 +81,34 @@
     }
 
     pre {
-        width: 100%;
-        height: 300px;
-        margin: 6px 12px;
-        tab-size: 40;
+        width: 90%;
+        height: 200px;
+        margin: 30px 100px;
+        tab-size: 50;
         font-size: 10px;
         overflow: auto;
     }
 
     .tooltip {
         position: absolute;
+        font: 15px sans-serif;
         width: 150px;
         height: 35px;
         pointer-events: none;
     }
 </style>
 
+<div class="row">
+    <div class="col-md-12" id="area1"></div>
+</div>
+<div class="row">
+    <div class="col-md-12" id="area2"></div>
+</div>
+
 <body>
     <script>
         var filteredData = [];
+
         function transformData(data) {
             var newData = [];
             data.forEach(function (d) {
@@ -117,7 +127,7 @@
 
         function addMissingValues(data) {
             var occupationList = ["Architect", "Artist", "Designer", "Engineer", "Entrepreneur", "Inventor", "Musician",
-                "Photographer", "Writer"
+                "Photographer", "Writer", "Actor", "Activist", "Physicist"
             ];
             var presentYear = [];
             var yearList = ["2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016",
@@ -160,7 +170,6 @@
             if (err) console.log(err);
 
             var flatData = transformData(inputData);
-            //  console.log(flatData);
 
             filteredData1 = flatData.filter(function (data) {
                 return data.occupation == "Architect" ||
@@ -171,19 +180,13 @@
                     data.occupation == "Inventor" ||
                     data.occupation == "Musician" ||
                     data.occupation == "Photographer" ||
-                    data.occupation == "Writer";
+                    data.occupation == "Writer" ||
+                    data.occupation == "Actor" ||
+                    data.occupation == "Activist" ||
+                    data.occupation == "Physicist";
             });
 
-            // filteredData1 = flatData.filter(function (data) {
-            //     return data.occupation == "CEO" ||
-            //         data.occupation == "Entrepreneur"
-            // });
-
             filteredData = addMissingValues(filteredData1);
-
-
-
-            //console.log(filteredData1);
 
             var nested_data = d3.nest()
                 .key(function (d) {
@@ -203,55 +206,71 @@
 
                 return obj;
             })
-            //  console.log(mqpdata);
-
             buildStreamGraph(mqpdata);
 
         })
 
         function drawParallelCoordinates(key) {
-            console.log(key);
             filterData = filteredData.filter(function (data) {
                 return data.occupation == key
             });
-            console.log(filterData);
 
-            var margin = { top: 66, right: 110, bottom: 20, left: 188 },
-                width = document.body.clientWidth - margin.left - margin.right,
-                height = 340 - margin.top - margin.bottom,
+            var margin = {
+                    top: 50,
+                    right: 100,
+                    bottom: 20,
+                    left: 100
+                },
+                width = 1600 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom,
                 innerHeight = height - 2;
 
             var devicePixelRatio = window.devicePixelRatio || 1;
 
             var color = d3.scaleOrdinal()
-                .range(["#5DA5B3", "#D58323", "#DD6CA7", "#54AF52", "#8C92E8", "#E15E5A", "#725D82", "#776327", "#50AB84", "#954D56", "#AB9C27", "#517C3F", "#9D5130", "#357468", "#5E9ACF", "#C47DCB", "#7D9E33", "#DB7F85", "#BA89AD", "#4C6C86", "#B59248", "#D8597D", "#944F7E", "#D67D4B", "#8F86C2"]);
+                .range(["#5DA5B3", "#D58323", "#DD6CA7", "#54AF52", "#8C92E8", "#E15E5A", "#725D82", "#776327",
+                    "#50AB84", "#954D56", "#AB9C27", "#517C3F", "#9D5130", "#357468", "#5E9ACF", "#C47DCB",
+                    "#7D9E33", "#DB7F85", "#BA89AD", "#4C6C86", "#B59248", "#D8597D", "#944F7E", "#D67D4B",
+                    "#8F86C2"
+                ]);
 
             var types = {
                 "Number": {
                     key: "Number",
-                    coerce: function (d) { return +d; },
+                    coerce: function (d) {
+                        return +d;
+                    },
                     extent: d3.extent,
-                    within: function (d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+                    within: function (d, extent, dim) {
+                        return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1];
+                    },
                     defaultScale: d3.scaleLinear().range([innerHeight, 0])
                 },
                 "String": {
                     key: "String",
                     coerce: String,
-                    extent: function (data) { return data.sort(); },
-                    within: function (d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+                    extent: function (data) {
+                        return data.sort();
+                    },
+                    within: function (d, extent, dim) {
+                        return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1];
+                    },
                     defaultScale: d3.scalePoint().range([0, innerHeight])
                 },
                 "Date": {
                     key: "Date",
-                    coerce: function (d) { return new Date(d); },
+                    coerce: function (d) {
+                        return new Date(d);
+                    },
                     extent: d3.extent,
-                    within: function (d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+                    within: function (d, extent, dim) {
+                        return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1];
+                    },
                     defaultScale: d3.scaleTime().range([0, innerHeight])
                 }
             };
 
-            var dimensions = [
-                {
+            var dimensions = [{
                     key: "year",
                     description: "Year",
                     type: types["String"]
@@ -293,7 +312,8 @@
 
             var yAxis = d3.axisLeft();
 
-            var container = d3.select("body").append("div")
+            var container = d3.select("#area2").append("div")
+                .attr("id", "parallelSVG")
                 .attr("class", "parcoords")
                 .style("width", width + margin.left + margin.right + "px")
                 .style("height", height + margin.top + margin.bottom + "px");
@@ -318,13 +338,17 @@
             ctx.lineWidth = 1.5;
             ctx.scale(devicePixelRatio, devicePixelRatio);
 
-            var output = d3.select("body").append("pre");
+            var output = d3.select("#area2").append("pre").attr("id", "parallelText");
 
             var axes = svg.selectAll(".axis")
                 .data(dimensions)
                 .enter().append("g")
-                .attr("class", function (d) { return "axis " + d.key.replace(/ /g, "_"); })
-                .attr("transform", function (d, i) { return "translate(" + xscale(i) + ")"; });
+                .attr("class", function (d) {
+                    return "axis " + d.key.replace(/ /g, "_");
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(" + xscale(i) + ")";
+                });
 
             // shuffle the data!
             data = d3.shuffle(filterData);
@@ -344,7 +368,9 @@
             dimensions.forEach(function (dim) {
                 if (!("domain" in dim)) {
                     // detect domain using dimension type's extent function
-                    dim.domain = d3_functor(dim.type.extent)(data.map(function (d) { return d[dim.key]; }));
+                    dim.domain = d3_functor(dim.type.extent)(data.map(function (d) {
+                        return d[dim.key];
+                    }));
                 }
                 if (!("scale" in dim)) {
                     // use type's default scale for dimension
@@ -361,22 +387,28 @@
 
             axes.append("g")
                 .each(function (d) {
-                    var renderAxis = "axis" in d
-                        ? d.axis.scale(d.scale)  // custom axis
-                        : yAxis.scale(d.scale);  // default axis
+                    var renderAxis = "axis" in d ?
+                        d.axis.scale(d.scale) // custom axis
+                        :
+                        yAxis.scale(d.scale); // default axis
                     d3.select(this).call(renderAxis);
                 })
                 .append("text")
                 .attr("class", "title")
                 .attr("text-anchor", "start")
-                .text(function (d) { return "description" in d ? d.description : d.key; });
+                .text(function (d) {
+                    return "description" in d ? d.description : d.key;
+                });
 
             // Add and store a brush for each axis.
             axes.append("g")
                 .attr("class", "brush")
                 .each(function (d) {
                     d3.select(this).call(d.brush = d3.brushY()
-                        .extent([[-10, 0], [10, height]])
+                        .extent([
+                            [-10, 0],
+                            [10, height]
+                        ])
                         .on("start", brushstart)
                         .on("brush", brush)
                         .on("end", brush)
@@ -394,8 +426,7 @@
             function project(d) {
                 return dimensions.map(function (p, i) {
                     // check if data element has property and contains a value
-                    if (
-                        !(p.key in d) ||
+                    if (!(p.key in d) ||
                         d[p.key] === null
                     ) return null;
 
@@ -460,10 +491,10 @@
 
                 var selected = data.filter(function (d) {
                     if (actives.every(function (active) {
-                        var dim = active.dimension;
-                        // test if point is within extents for each active brush
-                        return dim.type.within(d[dim.key], active.extent, dim);
-                    })) {
+                            var dim = active.dimension;
+                            // test if point is within extents for each active brush
+                            return dim.type.within(d[dim.key], active.extent, dim);
+                        })) {
                         return true;
                     }
                 });
@@ -474,8 +505,11 @@
 
                 output.text(d3.tsvFormat(selected.slice(0, 24)));
             }
+
             function d3_functor(v) {
-                return typeof v === "function" ? v : function () { return v; };
+                return typeof v === "function" ? v : function () {
+                    return v;
+                };
             };
         }
 
@@ -502,8 +536,8 @@
         // Handles a brush event, toggling the display of foreground lines.
         function brush() {
             var actives = dimensions.filter(function (p) {
-                return !y[p].brush.empty();
-            }),
+                    return !y[p].brush.empty();
+                }),
                 extents = actives.map(function (p) {
                     return y[p].brush.extent();
                 });
@@ -514,114 +548,35 @@
             });
         }
 
-
-        function drawBarChart(key) {
-            console.log(key);
-            selectData = filteredData.filter(function (data) {
-                return data.occupation == key
-            });
-            console.log(selectData);
-
-            var margin = {
-                top: 30,
-                right: 20,
-                bottom: 200,
-                left: 80
-            },
-                width = 960 - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
-
-            var x = d3.scaleBand()
-                .range([0, width], .1);
-
-            var y = d3.scaleLinear()
-                .range([height, 0]);
-
-            var xAxis = d3.axisBottom(x);
-
-            var yAxis = d3.axisLeft(y)
-                .ticks(10);
-
-            var svg = d3.select("body").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            x.domain(selectData.map(function (d) {
-                return d.speaker;
-            }))
-                .paddingInner(0.1)
-                .paddingOuter(0.5);
-            y.domain([0, d3.max(selectData, function (d) {
-                return d.comments;
-            })]);
-
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis)
-                .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "15px")
-                .attr("transform", "rotate(-45)");
-
-            svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .style("text-anchor", "end")
-                .selectAll("text")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "10px")
-                .text("Comments");
-
-
-            svg.selectAll(".bar")
-                .data(selectData)
-                .enter().append("rect")
-                .attr("class", "bar")
-                .attr("x", function (d) {
-                    return x(d.speaker);
-                })
-                .attr("width", x.bandwidth())
-                .attr("y", function (d) {
-                    return y(d.comments);
-                })
-                .attr("height", function (d) {
-                    return height - y(d.comments);
-                });
-        }
-
-
         function buildStreamGraph(mqpdata) {
-            //   console.log(mqpdata);
             var data = mqpdata;
+
             var stack = d3.stack()
                 .keys(["Architect", "Artist", "Designer", "Engineer", "Entrepreneur", "Inventor", "Musician",
-                    "Photographer", "Writer"
-                ])
+                    "Photographer", "Writer", "Actor", "Activist", "Physicist"])
                 .order(d3.stackOrderNone)
                 .offset(d3.stackOffsetWiggle);
 
             var series = stack(data);
 
-            // console.log(series);
 
-            var width = 1200,
-                height = 500;
+            var margin = {
+                    top: 50,
+                    right: 10,
+                    bottom: 10,
+                    left: 100
+                },
+                width = 1600 - margin.left - margin.right,
+                height = 600 - margin.top - margin.bottom;
+
+            // var width = 1200,
+            //     height = 500;
 
             var x = d3.scaleTime()
                 .domain(d3.extent(data, function (d) {
                     return d.month;
                 }))
-                .range([100, width]);
+                .range([100, width-50]);
 
             // setup axis
             var xAxis = d3.axisBottom(x);
@@ -632,7 +587,7 @@
                         return d[0] + d[1];
                     });
                 })])
-                .range([height / 2, -200]);
+                .range([height / 2, -100]);
 
             var color = d3.scaleLinear()
                 .range(["#51D0D7", "#31B5BB"]);
@@ -652,11 +607,11 @@
                 })
                 .curve(d3.curveBasis);
 
-            var tooltip = d3.select("body").append("div")
+            var tooltip = d3.select("#area1").append("div")
                 .attr("class", "tooltip");
 
-            var svg = d3.select("body").append("svg")
-                .attr("id", "the_SVG_ID")
+            var svg = d3.select("#area1").append("svg")
+                .attr("id", "streamSVG")
                 .attr("width", width)
                 .attr("height", height);
 
@@ -694,19 +649,18 @@
                 })
                 .on('click', function (d) {
                     var selected = d.key;
-                    tooltip.remove();
+                    if(d3.select("#parallelSVG")) {
+                        d3.select("#parallelSVG").remove();
+                        d3.select("#parallelText").remove();
+                    }
+
+                  //  console.log(selected);
+                 //   tooltip.remove();
                     // console.log(selected);
-                    d3.select("#the_SVG_ID").remove();
+                  //  d3.select("#the_SVG_ID").remove();
                     //drawBarChart(selected);
                     drawParallelCoordinates(selected);
                 })
-
-            // svg.append("g")
-            //     .attr("class", "axis axis--x")
-            //     .attr("transform", "translate(0," + (height) + ")")
-            //     .call(xAxis);
-
-            // var xAxisGroup = svg.append("g").call(xAxis);
         }
     </script>
 </body>
