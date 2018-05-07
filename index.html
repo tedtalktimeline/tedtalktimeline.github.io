@@ -6,22 +6,26 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://bl.ocks.org/syntagmatic/raw/3341641/render-queue.js"></script>
-    <h1 align="center">Ted Talk Timeline</h1>
+    <h1 align="center"><font size="80">Ted Talk Timeline</font></h1>
 </head>
 <style>
     .parcoords {
         display: block;
+        /* background-image: url("ted250-main.jpg"); */
     }
 
     .parcoords svg,
     .parcoords canvas {
         font: 10px sans-serif;
         position: absolute;
+
     }
 
     .parcoords canvas {
         opacity: 0.9;
         pointer-events: none;
+        background-image: url("TED3.jpg");
+        background-size: 1200px 600px;
     }
 
     .axis .title {
@@ -55,6 +59,7 @@
         fill: none;
         stroke: #222;
         stroke-width: 1px;
+        background-color: coral;
     }
 
     .axis:hover .title {
@@ -78,6 +83,7 @@
         fill-opacity: .3;
         stroke: #fff;
         stroke-width: 1px;
+
     }
 
     pre {
@@ -87,6 +93,7 @@
         tab-size: 50;
         font-size: 10px;
         overflow: auto;
+        /* background-color: coral; */
     }
 
     .tooltip {
@@ -95,7 +102,67 @@
         width: 150px;
         height: 35px;
         pointer-events: none;
+
     }
+    h1 {
+        text-shadow: 3px 2px red;
+    }
+    div.absolute {
+        position: absolute;
+        top: 70px;
+        right:0;
+        left: 500;
+        width: 480px;
+        height: 100px;
+        color: orange;
+        font-size: 20px;
+        font-family:fantasy;
+        /* text-shadow: 3px 2px red; */
+    }
+    div.absolute1 {
+        position: absolute;
+        top: 160px;
+        right:0;
+        left: 500;
+        width: 480px;
+        height: 100px;
+        color: black;
+        font-size: 30px;
+        font-family:inherit;
+    }
+    input[type=text] {
+    width: 1500px;
+    height: 200px;
+    align-items: center;
+    color: red;
+    border: none;
+    text-align: center;
+    font-size: 50px;
+  }
+  ul.b {
+    list-style-type: square;
+    position: absolute;
+    top: 205px;
+    right:0;
+    left: 500;
+    width: 480px;
+    height: 100px;
+    /* color: black; */
+    font-size: 20px;
+    font-family: monospace;
+  }
+  ul:nth-child(1): b {
+  color: green;
+}
+
+ul:nth-child(2): b {
+  color: red;
+}
+
+ul:nth-child(3): b {
+  color: blue;
+}
+
 </style>
 
 <div class="row">
@@ -106,6 +173,23 @@
 </div>
 
 <body>
+  <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.
+    </div>
+    <div  class="absolute1">Topics included are</div>
+    <ul class="b">
+          <li>Architect</li>
+          <li>Artist</li>
+          <li>Designer</li>
+          <li>Engineer</li>
+          <li>Entrepreneur</li>
+          <li>Inventor</li>
+          <li>Musician</li>
+          <li>Photographer</li>
+          <li>Writer</li>
+          <li>Actor</li>
+          <li>Activist</li>
+          <li>Physicist</li>
+  </ul>
     <script>
         var filteredData = [];
 
@@ -219,7 +303,7 @@
         function drawParallelCoordinates(key) {
             filterData = filteredData.filter(function (data) {
                 return data.occupation == key
-                // console.log(data.url);
+
             });
 
             var margin = {
@@ -353,6 +437,7 @@
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
             var canvas = container.append("canvas")
                 .attr("width", width * devicePixelRatio)
                 .attr("height", height * devicePixelRatio)
@@ -397,19 +482,6 @@
 
                 }
             });
-
-            // console.log(allUrl);
-            // allUrl.forEach(function (urltest) {
-            //   openVideo(urltest)
-            //   // console.log(urltest);
-            // });
-            // console.log(map1.size)
-
-            // var value;
-            // Object.keys(map).forEach(function(key) {
-            //     value = map[key];
-            //     console.log(value);
-            // });
 
             map1.forEach(function (item, key, mapObj) {
                 openVideo(key, item)
@@ -466,6 +538,7 @@
                 })
 
 
+
             // Add and store a brush for each axis.
             axes.append("g")
                 .attr("class", "brush")
@@ -501,10 +574,6 @@
 
 
             function mouseover(d) {
-
-                // svg.classed("active", true);
-
-                console.log(d)
 
             }
 
@@ -658,11 +727,11 @@
         }
 
         function drawBarChart(key) {
-            console.log(key);
+            // console.log(key);
             selectData = filteredData.filter(function (data) {
                 return data.occupation == key
             });
-            console.log(selectData);
+            // console.log(selectData);
             var margin = {
                     top: 30,
                     right: 20,
@@ -848,6 +917,17 @@
                 })
                 .on('click', function (d) {
                     var selected = d.key;
+                    // console.log(d);
+
+                    svg.append("foreignObject")
+                    .attr("x", 0)
+                    .attr("y", function() { return 50*8 })
+                    .attr("width", 140)
+                    .attr("height", 50)
+                    .html(function(d) {
+                      return  ("<input type=\"text\" value ="+ selected +">")
+                    })
+
                     if (d3.select("#parallelSVG")) {
                         d3.select("#parallelSVG").remove();
                         d3.select("#parallelText").remove();
