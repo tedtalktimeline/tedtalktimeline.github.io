@@ -259,10 +259,10 @@
                     speaker: d.main_speaker,
                     comments: +d.comments,
                     title: d.title,
-//                     url: d.url,
+                    url: d.url,
                     eventdata: d.event,
                     duration: +d.duration_min,
-//                     ratings: d.ratings
+                    ratings: d.ratings
                 });
             })
             return newData;
@@ -299,10 +299,10 @@
                             speaker: '',
                             comments: 0,
                             title: '',
-//                             url: '',
+                            url: '',
                             eventdata: '',
                             duration: 0,
-//                             ratings: ''
+                            ratings: ''
                         })
                     }
                 }
@@ -738,7 +738,7 @@
                 ctx.globalAlpha = d3.min([0.85 / Math.pow(selected.length, 0.3), 1]);
                 render(selected);
                 // console.log(selected.speaker)
-                output.text(d3.tsvFormat(selected.slice(0, 24)));
+                output.text(d3.tsvFormat(selected.slice(0, 100)));
                 // console.log(output.text(d3.tsvFormat(selected.slice(0, 24))))
             }
 
