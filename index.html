@@ -299,10 +299,10 @@
                             speaker: '',
                             comments: 0,
                             title: '',
-                            url: '',
+//                             url: '',
                             eventdata: '',
                             duration: 0,
-                            ratings: ''
+//                             ratings: ''
                         })
                     }
                 }
@@ -738,7 +738,7 @@
                 ctx.globalAlpha = d3.min([0.85 / Math.pow(selected.length, 0.3), 1]);
                 render(selected);
                 // console.log(selected.speaker)
-                output.text(d3.tsvFormat(selected.slice(0, 100)));
+                output.text(d3.tsvFormat(selected.slice(0, 24)));
                 // console.log(output.text(d3.tsvFormat(selected.slice(0, 24))))
             }
 
