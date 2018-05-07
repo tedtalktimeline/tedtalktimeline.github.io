@@ -6,18 +6,29 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://bl.ocks.org/syntagmatic/raw/3341641/render-queue.js"></script>
-    <h1 align="center"><font size="80">Ted Talk Timeline</font></h1>
-    <p style="margin-left:30em;margin-right:30em;"><font size="4">TED started as an annual, invite-only conference in 1984, but has since morphed into a global brand. Since 2006, TED.com has become a hub for thought-provoking ideas delivered by some of the world's brightest minds. With more than 2,500 talks recorded since its inception, the TED library continues to grow. Topics range from the future of the internet, to living stress-free, to even a love poem for lonely prime numbers.</font> </p>
-    <p style="margin-left:40em;margin-right:40em;"><b><font size="5"> Top Topics Included are </font></b></p>
-    <p style="margin-left:30em;margin-right:30em;"><font size="5"color="red">Architect, Artist, Designer, Engineer, Entrepreneur, Inventor, Musician,
-        Photographer, Writer, Actor, Activist, Physicist</font></p>
+    <h1 align="center">
+        <font size="80">Ted Talk Timeline</font>
+    </h1>
+    <p style="margin-left:30em;margin-right:30em;">
+        <font size="4">TED started as an annual, invite-only conference in 1984, but has since morphed into a global brand. Since 2006,
+            TED.com has become a hub for thought-provoking ideas delivered by some of the world's brightest minds. With more
+            than 2,500 talks recorded since its inception, the TED library continues to grow. Topics range from the future
+            of the internet, to living stress-free, to even a love poem for lonely prime numbers.</font>
+    </p>
+    <p style="margin-left:40em;margin-right:40em;">
+        <b>
+            <font size="5"> Top Topics Included are </font>
+        </b>
+    </p>
+    <p style="margin-left:30em;margin-right:30em;">
+        <font size="5" color="red">Architect, Artist, Designer, Engineer, Entrepreneur, Inventor, Musician, Photographer, Writer, Actor, Activist, Physicist</font>
+    </p>
 </head>
 <style>
-    
     .parcoords {
         display: block;
         /* background-color: lightblue; */
-      }
+    }
 
     .parcoords svg,
     .parcoords canvas {
@@ -39,16 +50,21 @@
         fill: #000000;
     }
 
-    .axis line,
+    .axis line {
+        fill: orange;
+        stroke: orange;
+        stroke-width: 2px;
+    }
+
     .axis path {
         fill: none;
-        stroke: #ccc;
+        stroke: orange;
         stroke-width: 1px;
     }
 
     .axis .tick text {
-        fill: #222;
-        opacity: 0;
+        fill: orange;
+        opacity: 1;
         pointer-events: none;
     }
 
@@ -96,10 +112,10 @@
         height: 200px;
         margin: 30px 100px;
         tab-size: 50;
-        font-size: 10px;
+        font-size: 15px;
         overflow: auto;
-        background-color: black ;
-        color: white;
+        background-color: black;
+        color: orange;
         /* background-color: coral; */
     }
 
@@ -111,6 +127,7 @@
         pointer-events: none;
 
     }
+
     h1 {
         text-shadow: 3px 2px red;
     }
@@ -119,74 +136,79 @@
     div.absolute {
         position: absolute;
         top: 70px;
-        right:0;
+        right: 0;
         left: 500;
         width: 480px;
         height: 100px;
         color: orange;
         font-size: 20px;
-        font-family:fantasy;
+        font-family: fantasy;
         /* text-shadow: 3px 2px red; */
     }
+
     div.absolute1 {
         position: absolute;
         top: 160px;
-        right:0;
+        right: 0;
         left: 500;
         width: 480px;
         height: 100px;
         color: black;
         font-size: 30px;
-        font-family:inherit;
+        font-family: inherit;
     }
+
     input[type=text] {
-    width: 1400px;
-    height: 100px;
-    align-items: center;
-    padding: 12px 20px;
-    margin: 8px 0;
-    color: red;
-    border: none;
-    text-align: center;
-    font-size: 50px;
-    background-color: black ;
-  }
-  ul.b {
-    list-style-type: square;
-    position: absolute;
-    top: 205px;
-    right:0;
-    left: 500;
-    width: 480px;
-    height: 100px;
-    /* color: black; */
-    font-size: 20px;
-    font-family: monospace;
-  }
-  ul:nth-child(1): b {
-  color: green;
-}
+        width: 1400px;
+        height: 100px;
+        align-items: center;
+        padding: 12px 20px;
+        margin: 8px 0;
+        color: red;
+        border: none;
+        text-align: center;
+        font-size: 50px;
+        background-color: black;
+    }
 
-ul:nth-child(2): b {
-  color: red;
-}
+    ul.b {
+        list-style-type: square;
+        position: absolute;
+        top: 205px;
+        right: 0;
+        left: 500;
+        width: 480px;
+        height: 100px;
+        /* color: black; */
+        font-size: 20px;
+        font-family: monospace;
+    }
 
-ul:nth-child(3): b {
-  color: blue;
-}
-body {
-    background-color: black ;
-    color: white;
-}
+    ul:nth-child(1): b {
+        color: green;
+    }
+
+    ul:nth-child(2): b {
+        color: red;
+    }
+
+    ul:nth-child(3): b {
+        color: blue;
+    }
+
+    body {
+        background-color: black;
+        color: white;
+    }
 </style>
 
 <div class="row">
-    <div class="col-md-4" id="area1"></div>
+    <div class="col-md-12" id="area1"></div>
 </div>
 <div class="row">
     <div class="col-md-12" id="area2"></div>
 </div>
-  <!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.
+<!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.
   </div>
   <div  class="absolute1">Topics included are</div>
   <ul class="b">
@@ -206,7 +228,7 @@ body {
 
 <body>
 
-  <!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017. -->
+    <!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017. -->
     <!-- </div> -->
     <!-- <div  class="absolute1">Topics included are</div>
     <ul class="b">
@@ -916,12 +938,24 @@ body {
                 .attr("width", width)
                 .attr("height", height);
 
-            svg.append("g")
-                .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + (height) + ")")
+            // svg.append("g")
+            //     .attr("class", "axis axis--x")
+            //     .attr("transform", "translate(0," + (height) + ")")
+            //     .call(xAxis);
+
+            //   var xAxisGroup = svg.append("g").call(xAxis);
+            var xAxisGroup = svg.append("g")
+                .attr("class", "axis line")
+                .attr("transform", "translate(0," + (80) + ")")
                 .call(xAxis);
 
-            var xAxisGroup = svg.append("g").call(xAxis);
+            xAxisGroup.append("g")
+                .attr("class", ".axis .tick text")
+                .attr("transform", "translate(0," + (100) + ")")
+                .attr("text-anchor", "middle")
+                .text(data, function (d) {
+                    return d.year;
+                });
 
             svg.selectAll("path")
                 .data(series)
@@ -953,13 +987,15 @@ body {
                     // console.log(d);
 
                     svg.append("foreignObject")
-                    .attr("x", 0)
-                    .attr("y", function() { return 50*8 })
-                    .attr("width", 140)
-                    .attr("height", 50)
-                    .html(function(d) {
-                      return  ("<input type=\"text\" value ="+ selected +">")
-                    })
+                        .attr("x", 0)
+                        .attr("y", function () {
+                            return 50 * 8
+                        })
+                        .attr("width", 140)
+                        .attr("height", 50)
+                        .html(function (d) {
+                            return ("<input type=\"text\" value =" + selected + ">")
+                        })
 
                     if (d3.select("#parallelSVG")) {
                         d3.select("#parallelSVG").remove();
