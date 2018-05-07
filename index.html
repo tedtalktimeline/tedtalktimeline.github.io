@@ -7,13 +7,20 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://bl.ocks.org/syntagmatic/raw/3341641/render-queue.js"></script>
     <h1 align="center"><font size="80">Ted Talk Timeline</font></h1>
-    <h2 align="center"><font size="80">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.</font></h2>
+    <p style="margin-left:35em;margin-right:35em;"><font size="5">TED started as an annual, invite-only conference in 1984, but has since morphed into a global brand. Since 2006, TED.com has become a hub for thought-provoking ideas delivered by some of the world's brightest minds. With more than 2,500 talks recorded since its inception, the TED library continues to grow. Topics range from the future of the internet, to living stress-free, to even a love poem for lonely prime numbers.</font> </p>
+    <p style="margin-left:35em;margin-right:35em;"><font size="5"color="red">Architect, Artist, Designer, Engineer, Entrepreneur, Inventor, Musician,
+        Photographer, Writer, Actor, Activist, Physicist</font></p>
 </head>
 <style>
+    optgroup {
+      margin-left: 25em;
+      font-size:20px;
+      font-family: fantasy;
+     }
     .parcoords {
         display: block;
         /* background-color: lightblue; */
-    }
+      }
 
     .parcoords svg,
     .parcoords canvas {
@@ -109,6 +116,8 @@
     h1 {
         text-shadow: 3px 2px red;
     }
+
+
     div.absolute {
         position: absolute;
         top: 70px;
@@ -117,7 +126,7 @@
         width: 480px;
         height: 100px;
         color: orange;
-        font-size: 10px;
+        font-size: 20px;
         font-family:fantasy;
         /* text-shadow: 3px 2px red; */
     }
@@ -134,12 +143,14 @@
     }
     input[type=text] {
     width: 1500px;
-    height: 200px;
+    height: 100px;
     align-items: center;
+    padding: 12px 20px;
+    margin: 8px 0;
     color: red;
     border: none;
     text-align: center;
-    font-size: 30px;
+    font-size: 50px;
     background-color: MistyRose ;
   }
   ul.b {
@@ -151,7 +162,7 @@
     width: 480px;
     height: 100px;
     /* color: black; */
-    font-size: 10px;
+    font-size: 20px;
     font-family: monospace;
   }
   ul:nth-child(1): b {
@@ -176,7 +187,7 @@ body {
 <div class="row">
     <div class="col-md-12" id="area2"></div>
 </div>
-<!--   <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.
+  <!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.
   </div>
   <div  class="absolute1">Topics included are</div>
   <ul class="b">
@@ -195,6 +206,24 @@ body {
 </ul> -->
 
 <body>
+
+  <!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017. -->
+    <!-- </div> -->
+    <!-- <div  class="absolute1">Topics included are</div>
+    <ul class="b">
+          <li>Architect</li>
+          <li>Artist</li>
+          <li>Designer</li>
+          <li>Engineer</li>
+          <li>Entrepreneur</li>
+          <li>Inventor</li>
+          <li>Musician</li>
+          <li>Photographer</li>
+          <li>Writer</li>
+          <li>Actor</li>
+          <li>Activist</li>
+          <li>Physicist</li>
+  </ul> -->
     <script>
         var filteredData = [];
 
