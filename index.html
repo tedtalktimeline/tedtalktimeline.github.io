@@ -45,9 +45,9 @@
     }
 
     .axis .title {
-        font-size: 15px;
+        font-size: 20px;
         transform: rotate(-21deg) translate(-5px, -6px);
-        fill: #000000;
+        fill: orange;
     }
 
     .axis line {
@@ -434,12 +434,13 @@
                 // },
                 {
                     key: "view",
+                    description: "View",
                     type: types["Number"],
                     scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
                 {
                     key: "speaker",
-                    description: "speaker",
+                    description: "Speaker",
                     type: types["String"],
                     axis: d3.axisRight()
                         .tickFormat(function (d, i) {
@@ -449,6 +450,7 @@
                 },
                 {
                     key: "comments",
+                    description: "Comments",
                     type: types["Number"],
                     scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
