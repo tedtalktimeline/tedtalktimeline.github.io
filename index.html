@@ -11,10 +11,10 @@
     </h1>
     <h2 style="margin-left:20%;margin-right:20%;font-family:cursive;">
 
-        TED started as an annual, invite-only conference in 1984, but has since morphed into a global brand. Since 2006,
-            TED.com has become a hub for thought-provoking ideas delivered by some of the world's brightest minds. With more
-            than 2,500 talks recorded since its inception, the TED library continues to grow. Topics range from the future
-            of the internet, to living stress-free, to even a love poem for lonely prime numbers.</h2>
+        TED started as an annual, invite-only conference in 1984, but has since morphed into a global brand. Since 2006, TED.com
+        has become a hub for thought-provoking ideas delivered by some of the world's brightest minds. With more than 2,500
+        talks recorded since its inception, the TED library continues to grow. Topics range from the future of the internet,
+        to living stress-free, to even a love poem for lonely prime numbers.</h2>
 
     <h3 style="margin-left:40%;margin-right:40%;text-align:center; font-family:Palatino;">
         <b>
@@ -26,13 +26,18 @@
     </h2>
     <h4>
     </h4>
-      <a href="https://www.ted.com/playlists/171/the_most_popular_talks_of_all" style="margin-left:45%;margin-right:20%;text-align:center;font-family:Impact;"><b><u><font size="6"color="red">Top 10 Ted talks</font></u></b></a>
+    <a href="https://www.ted.com/playlists/171/the_most_popular_talks_of_all" style="margin-left:45%;margin-right:20%;text-align:center;font-family:Impact;">
+        <b>
+            <u>
+                <font size="6" color="red">Top 10 Ted talks</font>
+            </u>
+        </b>
+    </a>
 
 </head>
 <style>
     .parcoords {
         display: block;
-        /* background-color: lightblue; */
     }
 
     .parcoords svg,
@@ -121,21 +126,18 @@
         overflow: auto;
         background-color: black;
         color: white;
-        /* background-color: coral; */
     }
 
     .tooltip {
-          position: absolute;
-          width: 150px;
-          height: 35px;
-          pointer-events: none;
-      }
+        position: absolute;
+        width: 150px;
+        height: 35px;
+        pointer-events: none;
+    }
 
     h1 {
         text-shadow: 3px 2px red;
     }
-
-
 
     input[type=text] {
         width: 1400px;
@@ -160,45 +162,18 @@
     <div class="col-md-12" id="area1"></div>
 </div>
 <div class="row">
-    <div class="col-md-12" id="area2"></div>
+    <div class="col-md-12" id="area2">
+        <svg class="plot"></svg>
+    </div>
 </div>
-<!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017.
-  </div>
-  <div  class="absolute1">Topics included are</div>
-  <ul class="b">
-        <li>Architect</li>
-        <li>Artist</li>
-        <li>Designer</li>
-        <li>Engineer</li>
-        <li>Entrepreneur</li>
-        <li>Inventor</li>
-        <li>Musician</li>
-        <li>Photographer</li>
-        <li>Writer</li>
-        <li>Actor</li>
-        <li>Activist</li>
-        <li>Physicist</li>
-</ul> -->
+<div class="row">
+    <div class="col-md-4" id="area3"></div>
+    <div class="col-md-8" id="area4">
+        <div id="option"></div>
+    </div>
+</div>
 
 <body>
-
-    <!-- <div class="absolute">This website shows information about different TED Talks uploaded to the official TED.com website until September 21st, 2017. -->
-    <!-- </div> -->
-    <!-- <div  class="absolute1">Topics included are</div>
-    <ul class="b">
-          <li>Architect</li>
-          <li>Artist</li>
-          <li>Designer</li>
-          <li>Engineer</li>
-          <li>Entrepreneur</li>
-          <li>Inventor</li>
-          <li>Musician</li>
-          <li>Photographer</li>
-          <li>Writer</li>
-          <li>Actor</li>
-          <li>Activist</li>
-          <li>Physicist</li>
-  </ul> -->
     <script>
         var filteredData = [];
 
@@ -215,6 +190,7 @@
                     url: d.url,
                     eventdata: d.event,
                     duration: +d.duration_min,
+                    languages: +d.languages,
                     ratings: d.ratings
                 });
             })
@@ -255,15 +231,14 @@
                             url: '',
                             eventdata: '',
                             duration: 0,
+                            languages: 0,
                             ratings: ''
                         })
                     }
                 }
             }
             return data;
-
         }
-
 
         d3.csv('newData.csv', function (err, inputData) {
             if (err) console.log(err);
@@ -310,9 +285,10 @@
         })
 
         function drawParallelCoordinates(key) {
+            var selected = [];
+
             filterData = filteredData.filter(function (data) {
                 return data.occupation == key
-
             });
 
             var margin = {
@@ -327,12 +303,7 @@
 
             var devicePixelRatio = window.devicePixelRatio || 1;
 
-            var color = d3.scaleOrdinal()
-                .range(["#85ffcb", "#ffe1d6", "#DBB1CD", "#EADEDB", "#8C92E8", "#E15E5A", "#725D82", "#776327",
-                    "#50AB84", "#954D56", "#AB9C27", "#517C3F", "#BC70A4", "#357468", "#5E9ACF", "#C47DCB",
-                    "#7D9E33", "#DB7F85", "#BA89AD", "#4C6C86", "#B59248", "#D8597D", "#944F7E", "#D67D4B",
-                    "#8F86C2"
-                ]);
+            var color = d3.scaleOrdinal(d3.schemeCategory20b);
 
             var types = {
                 "Number": {
@@ -375,17 +346,6 @@
                     description: "Year",
                     type: types["String"]
                 },
-                // {
-                //     key: "url",
-                //     description: "Url",
-                //     type: types["String"],
-                //     // axis: d3.axisRight()
-                //     //     .tickFormat(function (d, i) {
-                //     //         if (d == null) return "(null)";
-                //     //         return i % 5 == 0 ? d.slice(0, 22) : "";
-                //     //     })
-                //
-                // },
                 {
                     key: "view",
                     description: "View",
@@ -419,15 +379,6 @@
                         })
 
                 }
-                // {
-                //     key: "title",
-                //     description: "Title",
-                //     type: types["String"],
-                //     // axis: d3.axisLeft()
-                //     //     .tickFormat(function (d, i) {
-                //     //         return d;
-                //     //     })
-                // }
             ];
 
             var xscale = d3.scalePoint()
@@ -464,8 +415,6 @@
             ctx.scale(devicePixelRatio, devicePixelRatio);
 
             var output = d3.select("#area2").append("pre").attr("id", "parallelText");
-            var tooltip = d3.select("#area2").append("div")
-                .attr("class", "tooltip");
 
             var axes = svg.selectAll(".axis")
                 .data(dimensions)
@@ -479,37 +428,20 @@
 
             // shuffle the data!
             data = d3.shuffle(filterData);
-            allUrl = []
-            var map1 = new Map();
+            selected = data;
             data.forEach(function (d) {
                 dimensions.forEach(function (p) {
                     d[p.key] = !d[p.key] ? null : p.type.coerce(d[p.key]);
-                    map1.set(d['url'], d['title']);
                 });
 
                 // truncate long text strings to fit in data table
                 for (var key in d) {
-                    if (d[key] && d[key].length > 35) d[key] = d[key].slice(0, 1000);
+                    if (d[key] && d[key].length > 1001) d[key] = d[key].slice(0, 1000);
 
                 }
             });
 
-            map1.forEach(function (item, key, mapObj) {
-                openVideo(key, item)
-                drawBarChart(item)
-
-                // console.log(item.toString() + "<br />");
-            });
-
-            var stack = d3.stack()
-                .keys(allUrl)
-                .order(d3.stackOrderNone)
-                .offset(d3.stackOffsetWiggle);
-            //
-            var series = stack(filterData);
-
             // type/dimension default setting happens here
-
             dimensions.forEach(function (dim) {
                 if (!("domain" in dim)) {
                     // detect domain using dimension type's extent function
@@ -522,13 +454,9 @@
                     dim.scale = dim.type.defaultScale.copy();
                 }
                 dim.scale.domain(dim.domain);
-
-
             });
 
-
             var render = renderQueue(draw).rate(50);
-
             ctx.clearRect(0, 0, width, height);
             ctx.globalAlpha = d3.min([0.85 / Math.pow(data.length, 0.3), 1]);
             render(data);
@@ -548,8 +476,6 @@
                     return "description" in d ? d.description : d.key;
                 })
 
-
-
             // Add and store a brush for each axis.
             axes.append("g")
                 .attr("class", "brush")
@@ -567,40 +493,15 @@
                 })
                 .selectAll("rect")
                 .attr("x", -8)
-                .attr("width", 16)
-                .on("mouseover", mouseover)
-                .on("mouseout", mouseout);
-
+                .attr("width", 16);
 
             d3.selectAll(".axis.occupation .tick text")
                 .style("fill", color);
 
-
-            // d3.selectAll(".axis text")
-
-
-            var projection = svg.selectAll(".background path,.foreground path")
-                .on("mouseover", mouseover)
-                .on("mouseout", mouseout);
-
-
-            function mouseover(d) {
-
-            }
-
-            function mouseout(d) {
-                svg.classed("active", false);
-                projection.classed("inactive", false);
-                axes.classed("inactive", false);
-            }
-
-            function moveToFront() {
-                this.parentNode.appendChild(this);
-            }
-
-            output.text(d3.tsvFormat(data.slice(0, 100)));
-
-            // console.log(data.url);
+            output.text(d3.tsvFormat(data.slice(0, 1000)));
+            output.on('click', function () {
+                drawBarChart(selected);
+            });
 
             function project(d) {
                 return dimensions.map(function (p, i) {
@@ -663,16 +564,13 @@
                         return d3.brushSelection(this);
                     })
                     .each(function (d) {
-                        // if (dim.key == 'url') testUrls.push(d[dim.key]);
                         actives.push({
                             dimension: d,
                             extent: d3.brushSelection(this)
                         })
                     })
 
-                testUrls = []
-                var selected = data.filter(function (d) {
-                    // console.log(selected)
+                selected = data.filter(function (d) {
                     if (actives.every(function (active) {
                             var dim = active.dimension;
                             // test if point is within extents for each active brush
@@ -682,17 +580,15 @@
                     }
                 });
 
-                // testUrls.forEach(function (urltest) {
-                //   openVideo(urltest)
-                //   // console.log(urltest);
-                // });
-
                 ctx.clearRect(0, 0, width, height);
                 ctx.globalAlpha = d3.min([0.85 / Math.pow(selected.length, 0.3), 1]);
                 render(selected);
-                // console.log(selected.speaker)
-                output.text(d3.tsvFormat(selected.slice(0, 100)));
-                // console.log(output.text(d3.tsvFormat(selected.slice(0, 24))))
+
+                output.text(d3.tsvFormat(selected.slice(0, 1000)));
+
+                output.on('click', function () {
+                    drawBarChart(selected);
+                });
             }
 
             function d3_functor(v) {
@@ -718,112 +614,70 @@
             }));
         }
 
-        function brushstart() {
-            d3.event.sourceEvent.stopPropagation();
-        }
+        function displayVideo(data) {
+            var attachVideo = d3.select("#area3");
 
-        // Handles a brush event, toggling the display of foreground lines.
-        function brush() {
-            var actives = dimensions.filter(function (p) {
-                    return !y[p].brush.empty();
-                }),
-                extents = actives.map(function (p) {
-                    return y[p].brush.extent();
-                });
-            foreground.style("display", function (d) {
-                return actives.every(function (p, i) {
-                    return extents[i][0] <= d[p] && d[p] <= extents[i][1];
-                }) ? null : "none";
+            var canvas = attachVideo.append("canvas")
+                .attr("width", width)
+                .attr("height", height)
+                .style("width", width + "px")
+                .style("height", height + "px")
+                .style("margin-top", margin.top + "px")
+                .style("margin-left", margin.left + "px");
+
+            var video = attachVideo.data(data).append("video").attr("src", function (d) {
+                return d.url;
             });
+
+            var ctx1 = canvas.node().getContext("2d");
+
+            // set canvas size = video size when known
+            // video.node().addEventListener('loadedmetadata', function () {
+            //     canvas.width = video.videoWidth;
+            //     canvas.height = video.videoHeight;
+            // });
+
+            video.node().addEventListener('play', function () {
+                var $this = this; //cache
+                (function loop() {
+                    if (!$this.paused && !$this.ended) {
+                        ctx1.drawImage($this, 0, 0);
+                        setTimeout(loop, 1000 / 30); // drawing at 30fps
+                    }
+                })();
+            }, 0);
         }
 
-        function drawBarChart(key) {
-            // console.log(key);
-            selectData = filteredData.filter(function (data) {
-                return data.occupation == key
-            });
-            // console.log(selectData);
-            var margin = {
-                    top: 30,
-                    right: 20,
-                    bottom: 200,
-                    left: 80
-                },
-                width = screen.width - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
-            var x = d3.scaleBand()
-                .range([0, width], .1);
-            var y = d3.scaleLinear()
-                .range([height, 0]);
-            var xAxis = d3.axisBottom(x);
-            var yAxis = d3.axisLeft(y)
-                .ticks(10);
-            var svg = d3.select("body").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            x.domain(selectData.map(function (d) {
-                    return d.speaker;
-                }))
-                .paddingInner(0.1)
-                .paddingOuter(0.5);
-            y.domain([0, d3.max(selectData, function (d) {
-                return d.comments;
-            })]);
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis)
-                .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "15px")
-                .attr("transform", "rotate(-45)");
-            svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .text("Comments")
-                .style("text-anchor", "end")
-                .selectAll("text")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "10px");
-            svg.selectAll(".bar")
-                .data(selectData)
-                .enter().append("rect")
-                .attr("class", "bar")
-                .attr("x", function (d) {
-                    return x(d.speaker);
-                })
-                .attr("width", x.bandwidth())
-                .attr("y", function (d) {
-                    return y(d.comments);
-                })
-                .attr("height", function (d) {
-                    return height - y(d.comments);
-                });
-        }
+        function drawBarChart(data) {
+             console.log(data);
 
+            // var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+            //     width = screen.width / 2 - margin.left - margin.right,
+            //     height = 500 - margin.top - margin.bottom;
 
-        function openVideo(key, value) {
-            if (value != null && key != null) {
-                // console.log(actives);
-                var svg = d3.select("body").append("svg")
-                    .attr("width", screen.width)
-                    .attr("height", 200);
-                svg.append("foreignObject")
-                    .attr("width", 480)
-                    .attr("height", 500)
-                    .append("xhtml:body")
-                    .style("font", "14px 'Helvetica Neue'")
-                    .html("<a href='" + key + "'>" + value + "</a>");
-            }
+            // // set the ranges
+            // var x = d3.scaleBand()
+            //     .range([0, width])
+            //     .padding(0.1);
+
+            // var y = d3.scaleLinear()
+            //     .range([height, 0]);
+
+            // // var button = d3.select("#area4").append("div")
+            // //     .attr("id", "buttonContainer").append("button")
+            // //     .attr("id", "details");
+
+            // d3.select("#details").on("click", function () { alert("hi") });
+
+            // var div = d3.select("#option");
+            // div.html(
+            //         "<input id=" + "trash-button" + " type=" + "image" + " title=" + "End Event" + " src=" +
+            //         "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTJW-WQ71uV3QRXF4bEYq8v6JvI7sshASrKLisTWLTWVLF3jqkj" +
+            //         " alt=" + "trash" + " style=" + "width:25px;" + " >" + "<br>" + "<button onclick=" +
+            //         "trashfuntion()" + ">" + "Click Me" + "</button> ")
+            //     .style("left", "10px")
+            //     .style("top", "10px");
+
         }
 
         function buildStreamGraph(mqpdata) {
@@ -848,9 +702,6 @@
                 width = screen.width - margin.left - margin.right,
                 height = 600 - margin.top - margin.bottom;
 
-            // var width = 1200,
-            //     height = 500;
-
             var x = d3.scaleTime()
                 .domain(d3.extent(data, function (d) {
                     return d.month;
@@ -868,14 +719,10 @@
                 })])
                 .range([height / 2, -100]);
 
-            var color = d3.scaleLinear()
-                .range(["#51D0D7", "#31B5BB"]);
-
             var color = d3.scaleOrdinal(d3.schemeCategory20);
 
             var area = d3.area()
                 .x(function (d) {
-                    // console.info('in area function', d);
                     return x(d.data.month);
                 })
                 .y0(function (d) {
@@ -894,12 +741,6 @@
                 .attr("width", width)
                 .attr("height", height);
 
-            // svg.append("g")
-            //     .attr("class", "axis axis--x")
-            //     .attr("transform", "translate(0," + (height) + ")")
-            //     .call(xAxis);
-
-            //   var xAxisGroup = svg.append("g").call(xAxis);
             var xAxisGroup = svg.append("g")
                 .attr("class", "axis line")
                 .attr("transform", "translate(0," + (80) + ")")
@@ -939,9 +780,7 @@
                         .style("opacity", 1);
                 })
                 .on('click', function (d) {
-                    var selected = d.key;
-                    // console.log(d);
-                      // tooltip.remove();
+                    var selectedStream = d.key;
                     svg.append("foreignObject")
                         .attr("x", 0)
                         .attr("y", function () {
@@ -950,22 +789,16 @@
                         .attr("width", 140)
                         .attr("height", 50)
                         .html(function (d) {
-                            return ("<input type=\"text\" value =" + selected + ">")
+                            return ("<input type=\"text\" value =" + selectedStream + ">")
                         })
-
-
                     d3.select("#the_SVG_ID").remove();
                     if (d3.select("#parallelSVG")) {
                         d3.select("#parallelSVG").remove();
                         d3.select("#parallelText").remove();
                     }
-
-                    drawParallelCoordinates(selected, mqpdata);
-
-
+                    drawParallelCoordinates(selectedStream);
                 })
         }
     </script>
 </body>
-
 </html>
