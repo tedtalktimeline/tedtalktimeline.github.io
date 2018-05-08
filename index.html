@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://bl.ocks.org/syntagmatic/raw/3341641/render-queue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <h1 align="center">
         <font size="80">Ted Talk Timeline</font>
     </h1>
@@ -156,6 +157,16 @@
         background-color: black;
         color: white;
     }
+
+    #c {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+    }
 </style>
 
 <div class="row">
@@ -163,13 +174,12 @@
 </div>
 <div class="row">
     <div class="col-md-12" id="area2">
-        <svg class="plot"></svg>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-4" id="area3"></div>
+    <div class="col-md-4" id="area3">
+    </div>
     <div class="col-md-8" id="area4">
-        <div id="option"></div>
     </div>
 </div>
 
@@ -538,14 +548,11 @@
                         }
                         return;
                     }
-
                     if (i == 0) {
                         ctx.moveTo(p[0], p[1]);
                         return;
                     }
-
                     ctx.lineTo(p[0], p[1]);
-
                 });
                 ctx.stroke();
             }
@@ -557,7 +564,6 @@
             // Handles a brush event, toggling the display of foreground lines.
             function brush() {
                 render.invalidate();
-
                 var actives = [];
                 svg.selectAll(".axis .brush")
                     .filter(function (d) {
@@ -614,71 +620,98 @@
             }));
         }
 
-        function displayVideo(data) {
-            var attachVideo = d3.select("#area3");
+        function drawBarChart(data) {
+            console.log(data[0].url);
+            if (d3.select("#frame")) {
+                d3.select("#TedPreview").remove();
+                d3.select("#frame").remove();
+            }
+            embedVideo(data[0].url)
+        }
 
-            var canvas = attachVideo.append("canvas")
-                .attr("width", width)
-                .attr("height", height)
+        function embedVideo(url) {
+            var margin = {
+                    top: 50,
+                    right: 100,
+                    bottom: 20,
+                    left: 50
+                },
+                width = screen.width / 2 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+            var v = d3.select("#area3")
+                .append("div")
+                .attr("id", "TedPreview")
+                .style("width", width + margin.left + margin.right + "px")
+                .style("height", height + margin.top + margin.bottom + "px");
+
+            v.append("iframe")
+                .attr("id", "frame")
+                .attr("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms")
+                .attr("src", url)
                 .style("width", width + "px")
                 .style("height", height + "px")
-                .style("margin-top", margin.top + "px")
-                .style("margin-left", margin.left + "px");
+                .style("margin-left", 100 + "px")
+                .style("margin-top", 50 + "px")
+                .style("border", 0);
 
-            var video = attachVideo.data(data).append("video").attr("src", function (d) {
-                return d.url;
-            });
 
-            var ctx1 = canvas.node().getContext("2d");
+            // var canvas = d3.select("#c");
+            // var context = canvas.node().getContext('2d');
 
-            // set canvas size = video size when known
-            // video.node().addEventListener('loadedmetadata', function () {
-            //     canvas.width = video.videoWidth;
-            //     canvas.height = video.videoHeight;
-            // });
+            // var cw = Math.floor(canvas.clientWidth / 100);
+            // var ch = Math.floor(canvas.clientHeight / 100);
+            // canvas.width = cw;
+            // canvas.height = ch;
 
-            video.node().addEventListener('play', function () {
-                var $this = this; //cache
-                (function loop() {
-                    if (!$this.paused && !$this.ended) {
-                        ctx1.drawImage($this, 0, 0);
-                        setTimeout(loop, 1000 / 30); // drawing at 30fps
-                    }
-                })();
-            }, 0);
+            // v.node().addEventListener('play', function () {
+            //     draw(this, context, cw, ch);
+            // }, false);
         }
 
-        function drawBarChart(data) {
-             console.log(data);
-
-            // var margin = { top: 20, right: 20, bottom: 30, left: 40 },
-            //     width = screen.width / 2 - margin.left - margin.right,
-            //     height = 500 - margin.top - margin.bottom;
-
-            // // set the ranges
-            // var x = d3.scaleBand()
-            //     .range([0, width])
-            //     .padding(0.1);
-
-            // var y = d3.scaleLinear()
-            //     .range([height, 0]);
-
-            // // var button = d3.select("#area4").append("div")
-            // //     .attr("id", "buttonContainer").append("button")
-            // //     .attr("id", "details");
-
-            // d3.select("#details").on("click", function () { alert("hi") });
-
-            // var div = d3.select("#option");
-            // div.html(
-            //         "<input id=" + "trash-button" + " type=" + "image" + " title=" + "End Event" + " src=" +
-            //         "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTJW-WQ71uV3QRXF4bEYq8v6JvI7sshASrKLisTWLTWVLF3jqkj" +
-            //         " alt=" + "trash" + " style=" + "width:25px;" + " >" + "<br>" + "<button onclick=" +
-            //         "trashfuntion()" + ">" + "Click Me" + "</button> ")
-            //     .style("left", "10px")
-            //     .style("top", "10px");
-
+        function draw(v, c, w, h) {
+            if (v.paused || v.ended) return false;
+            c.drawImage(v, 0, 0, w, h);
+            setTimeout(draw, 20, v, c, w, h);
         }
+        // var margin = {
+        //         top: 50,
+        //         right: 100,
+        //         bottom: 20,
+        //         left: 100
+        //     },
+        //     width = screen.width / 3 - margin.left - margin.right,
+        //     height = 500 - margin.top - margin.bottom;
+
+        // var attachVideo = d3.select("#area3");
+        // var canvas = attachVideo.append("canvas")
+        //     .attr("width", width)
+        //     .attr("height", height)
+        //     .style("width", width + "px")
+        //     .style("height", height + "px")
+        //     .style("margin-top", margin.top + "px")
+        //     .style("margin-left", margin.left + "px");
+
+        // var video = attachVideo.append("video").attr("src", url);
+
+        // var ctx1 = canvas.node().getContext("2d");
+
+        // //set canvas size = video size when known
+        // video.node().addEventListener('loadedmetadata', function () {
+        //     canvas.width = video.videoWidth;
+        //     canvas.height = video.videoHeight;
+        // });
+
+        // video.node().addEventListener('play', function () {
+        //     var $this = this; //cache
+        //     (function loop() {
+        //         if (!$this.paused && !$this.ended) {
+        //             ctx1.drawImage($this, 0, 0);
+        //             setTimeout(loop, 1000 / 30); // drawing at 30fps
+        //         }
+        //     })();
+        // }, 0);
+        // }
 
         function buildStreamGraph(mqpdata) {
             var data = mqpdata;
@@ -801,4 +834,5 @@
         }
     </script>
 </body>
+
 </html>
