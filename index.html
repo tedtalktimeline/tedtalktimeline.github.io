@@ -133,6 +133,17 @@
         height: 35px;
     }
 
+    .bartoolTip {
+        position: absolute;
+        display: none;
+        min-width: 80px;
+        height: auto;
+        background: none repeat scroll 0 0 #ffffff;
+        border: 1px solid #6F257F;
+        padding: 14px;
+        text-align: center;
+    }
+
     h1 {
         text-shadow: 3px 2px red;
     }
@@ -164,17 +175,16 @@
         width: 100%;
         height: 100%;
     }
+
     .footer {
-      position: relative;
-     left: 0;
-     bottom: 0;
-     width: 100%;
-     background-color: gray;
-     color: white;
-     text-align: center;
-  }
-
-
+        position: relative;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: gray;
+        color: white;
+        text-align: center;
+    }
 </style>
 
 <div class="row">
@@ -185,15 +195,22 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-4" id="area3">
+    <div class="col-md-8" id="area3">
+        <svg width="960" height="500"></svg>
     </div>
-    <div class="col-md-8" id="area4">
+    <div class="col-md-4" id="area4">
     </div>
 </div>
 <div class="footer">
-  <a href="https://tedtalktimeline.github.io/" style="text-align:center;font-family:Palatino;"><font size="4" color="white">https://tedtalktimeline.github.io/</font></a>
-  <h5 style="text-align:center;font-family:Palatino;"><font size="4" color="white">Neha Bandal<br>Gauri Joshi</font></h5>
+    <a href="https://tedtalktimeline.github.io/" style="text-align:center;font-family:Palatino;">
+        <font size="4" color="white">https://tedtalktimeline.github.io/</font>
+    </a>
+    <h5 style="text-align:center;font-family:Palatino;">
+        <font size="4" color="white">Neha Bandal
+            <br>Gauri Joshi</font>
+    </h5>
 </div>
+
 <body>
     <script>
         var filteredData = [];
@@ -314,11 +331,11 @@
             });
 
             var margin = {
-                    top: 50,
-                    right: 100,
-                    bottom: 20,
-                    left: 100
-                },
+                top: 50,
+                right: 100,
+                bottom: 20,
+                left: 100
+            },
                 width = screen.width - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom,
                 innerHeight = height - 2;
@@ -364,43 +381,43 @@
             };
 
             var dimensions = [{
-                    key: "year",
-                    description: "Year",
-                    type: types["String"]
-                },
-                {
-                    key: "view",
-                    description: "View",
-                    type: types["Number"],
-                    scale: d3.scaleSqrt().range([innerHeight, 0])
-                },
-                {
-                    key: "speaker",
-                    description: "Speaker",
-                    type: types["String"],
-                    axis: d3.axisRight()
-                        .tickFormat(function (d, i) {
-                            if (d == null) return "(null)";
-                            return i % 5 == 0 ? d.slice(0, 22) : "";
-                        })
-                },
-                {
-                    key: "comments",
-                    description: "Comments",
-                    type: types["Number"],
-                    scale: d3.scaleSqrt().range([innerHeight, 0])
-                },
-                {
-                    key: "eventdata",
-                    description: "Event",
-                    type: types["String"],
-                    axis: d3.axisRight()
-                        .tickFormat(function (d, i) {
-                            if (d == null) return "(null)";
-                            return i % 5 == 0 ? d.slice(0, 22) : "";
-                        })
+                key: "year",
+                description: "Year",
+                type: types["String"]
+            },
+            {
+                key: "view",
+                description: "View",
+                type: types["Number"],
+                scale: d3.scaleSqrt().range([innerHeight, 0])
+            },
+            {
+                key: "speaker",
+                description: "Speaker",
+                type: types["String"],
+                axis: d3.axisRight()
+                    .tickFormat(function (d, i) {
+                        if (d == null) return "(null)";
+                        return i % 5 == 0 ? d.slice(0, 22) : "";
+                    })
+            },
+            {
+                key: "comments",
+                description: "Comments",
+                type: types["Number"],
+                scale: d3.scaleSqrt().range([innerHeight, 0])
+            },
+            {
+                key: "eventdata",
+                description: "Event",
+                type: types["String"],
+                axis: d3.axisRight()
+                    .tickFormat(function (d, i) {
+                        if (d == null) return "(null)";
+                        return i % 5 == 0 ? d.slice(0, 22) : "";
+                    })
 
-                }
+            }
             ];
 
             var xscale = d3.scalePoint()
@@ -522,7 +539,7 @@
 
             output.text(d3.tsvFormat(data.slice(0, 1000)));
             output.on('click', function () {
-                drawBarChart(selected);
+                getDetails(selected);
             });
 
             function project(d) {
@@ -590,10 +607,10 @@
 
                 selected = data.filter(function (d) {
                     if (actives.every(function (active) {
-                            var dim = active.dimension;
-                            // test if point is within extents for each active brush
-                            return dim.type.within(d[dim.key], active.extent, dim);
-                        })) {
+                        var dim = active.dimension;
+                        // test if point is within extents for each active brush
+                        return dim.type.within(d[dim.key], active.extent, dim);
+                    })) {
                         return true;
                     }
                 });
@@ -605,7 +622,7 @@
                 output.text(d3.tsvFormat(selected.slice(0, 1000)));
 
                 output.on('click', function () {
-                    drawBarChart(selected);
+                    getDetails(selected);
                 });
             }
 
@@ -632,24 +649,29 @@
             }));
         }
 
-        function drawBarChart(data) {
-            console.log(data[0].ratings);
+        function getDetails(data) {
+            //            console.log(data[0].ratings);
             if (d3.select("#frame")) {
                 d3.select("#TedPreview").remove();
                 d3.select("#frame").remove();
             }
-            embedVideo(data[0].url);
-            // drawRatingGraph(data[0].ratings);
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].url !== null && data[i].url !== '' && data[i].ratings !== null && data[i].ratings !== '') {
+                    // embedVideo(data[i].url);
+                    drawRatingBarGraph(data[i]);
+                    break;
+                }
+            }
         }
 
         function embedVideo(url) {
             var margin = {
-                    top: 50,
-                    right: 100,
-                    bottom: 20,
-                    left: 50
-                },
-                width = screen.width / 2 - margin.left - margin.right,
+                top: 50,
+                right: 100,
+                bottom: 20,
+                left: 20
+            },
+                width = 500 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
             var v = d3.select("#area3")
@@ -667,64 +689,107 @@
                 .style("margin-left", 100 + "px")
                 .style("margin-top", 50 + "px")
                 .style("border", 0);
-
-
-            // var canvas = d3.select("#c");
-            // var context = canvas.node().getContext('2d');
-
-            // var cw = Math.floor(canvas.clientWidth / 100);
-            // var ch = Math.floor(canvas.clientHeight / 100);
-            // canvas.width = cw;
-            // canvas.height = ch;
-
-            // v.node().addEventListener('play', function () {
-            //     draw(this, context, cw, ch);
-            // }, false);
         }
 
-        function draw(v, c, w, h) {
-            if (v.paused || v.ended) return false;
-            c.drawImage(v, 0, 0, w, h);
-            setTimeout(draw, 20, v, c, w, h);
+        function drawRatingBarGraph(data) {
+            var svg = d3.select("#area3").select("svg"),
+                margin = {
+                    top: 20,
+                    right: 20,
+                    bottom: 100,
+                    left: 150
+                },
+                width = +svg.attr("width") - margin.left - margin.right,
+                height = +svg.attr("height") - margin.top - margin.bottom;
+
+            var tooltip = d3.select("#area3").append("div").attr("class", "toolTip");
+
+            var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+                y = d3.scaleLinear().rangeRound([height, 0]);
+
+            var colours = d3.scaleOrdinal()
+                .range(["#6F257F", "#CA0D59"]);
+
+            var g = svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var ratingData, JSONObject;
+
+            var flatData = transformBarData(data);
+
+            x.domain(flatData.map(function (d) {
+                return d.rate_category;
+            }));
+
+            y.domain([0, d3.max(flatData, function (d) {
+                return d.count;
+            })]);
+
+            g.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)");
+
+            g.append("g")
+                .attr("class", "axis axis--y")
+                .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 75 - margin.left)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .attr("fill", "#5D6971")
+                .text("No. of Ratings");
+
+            g.selectAll(".bar")
+                .data(flatData)
+                .enter().append("rect")
+                .attr("x", function (d) {
+                    return x(d.rate_category);
+                })
+                .attr("y", function (d) {
+                    return y(d.count);
+                })
+                .attr("width", x.bandwidth())
+                .attr("height", function (d) {
+                    return height - y(d.count);
+                })
+                .attr("fill", function (d) {
+                    return colours(d.rate_category);
+                })
+                .on("mousemove", function (d) {
+                    tooltip
+                        .style("left", d3.event.pageX - 50 + "px")
+                        .style("top", d3.event.pageY - 50 + "px")
+                        .style("display", "inline-block")
+                        .html("raterId: " + (d.rater_id) + "<br>" + "Count: " + (d.count));
+                })
+                .on("mouseout", function (d) {
+                    tooltip.style("display", "none");
+                });
         }
-        // var margin = {
-        //         top: 50,
-        //         right: 100,
-        //         bottom: 20,
-        //         left: 100
-        //     },
-        //     width = screen.width / 3 - margin.left - margin.right,
-        //     height = 500 - margin.top - margin.bottom;
 
-        // var attachVideo = d3.select("#area3");
-        // var canvas = attachVideo.append("canvas")
-        //     .attr("width", width)
-        //     .attr("height", height)
-        //     .style("width", width + "px")
-        //     .style("height", height + "px")
-        //     .style("margin-top", margin.top + "px")
-        //     .style("margin-left", margin.left + "px");
+        function transformBarData(d) {
+            var newData = [];
+            ratingData = d.ratings;
+            var JSONObject = eval('(' + ratingData + ')');
+            for (var i in JSONObject) {
+                newData.push({
+                    title: d.title,
+                    rater_id: +JSONObject[i]["id"],
+                    rate_category: JSONObject[i]["name"],
+                    count: +JSONObject[i]["count"]
+                });
+            }
+            return newData;
+        }
 
-        // var video = attachVideo.append("video").attr("src", url);
-
-        // var ctx1 = canvas.node().getContext("2d");
-
-        // //set canvas size = video size when known
-        // video.node().addEventListener('loadedmetadata', function () {
-        //     canvas.width = video.videoWidth;
-        //     canvas.height = video.videoHeight;
-        // });
-
-        // video.node().addEventListener('play', function () {
-        //     var $this = this; //cache
-        //     (function loop() {
-        //         if (!$this.paused && !$this.ended) {
-        //             ctx1.drawImage($this, 0, 0);
-        //             setTimeout(loop, 1000 / 30); // drawing at 30fps
-        //         }
-        //     })();
-        // }, 0);
-        // }
 
         function buildStreamGraph(mqpdata) {
             var data = mqpdata;
@@ -741,11 +806,11 @@
 
 
             var margin = {
-                    top: 50,
-                    right: 10,
-                    bottom: 10,
-                    left: 100
-                },
+                top: 50,
+                right: 10,
+                bottom: 10,
+                left: 100
+            },
                 width = screen.width - margin.left - margin.right,
                 height = 600 - margin.top - margin.bottom;
 
@@ -820,7 +885,7 @@
                         .style("opacity", 1);
                     tooltip.html(d.key)
                         .style("left", (d3.event.pageX + 5) + "px")
-                        .style("top", (d3.event.pageY-400) + "px");
+                        .style("top", (d3.event.pageY - 400) + "px");
 
                 })
                 .on('mouseout', function (d) {
@@ -852,132 +917,6 @@
                     drawParallelCoordinates(selectedStream);
                 })
         }
-
-
-
-      //   function drawRatingGraph(ratingData) {
-      //     console.log(ratingData);
-      //     var margin = {
-      //             top: 50,
-      //             right: 600,
-      //             bottom: 20,
-      //             left: 100
-      //         },
-      //         width = screen.width / 2 - margin.left - margin.right,
-      //         height = 500 - margin.top - margin.bottom;
-      //
-      //     var v = d3.select("#area4")
-      //         .append("div")
-      //         .attr("id", "TedPreview")
-      //         .style("width", width + margin.left + margin.right + "px")
-      //         .style("height", height + margin.top + margin.bottom + "px");
-      //
-      //   var tooltip = d3.select("body").append("div").attr("class", "toolTip");
-      //   //
-      //   var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-      //       y = d3.scaleLinear().rangeRound([height, 0]);
-      //
-      //   var colours = d3.scaleOrdinal()
-      //       .range(["#6F257F", "#CA0D59"]);
-      //
-      //   // var g = svg.append("g")
-      //   //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-      //
-      //   var ratingData, JSONObject;
-      //   //
-      //   function transformData(data) {
-      //       var newData = [];
-      //       // data.forEach(function (d) {
-      //           // ratingData = d.ratings;
-      //           var JSONObject = eval('(' + data + ')');
-      //           for (var i in JSONObject) {
-      //               newData.push({
-      //                   // title: d.title,
-      //                   // description: d.description,
-      //                   rater_id: +JSONObject[i]["id"],
-      //                   rate_category: JSONObject[i]["name"],
-      //                   count: +JSONObject[i]["count"]
-      //               });
-      //           }
-      //       // });
-      //       return newData;
-      //   }
-      //   //
-      //   // d3.csv("ted_main.csv", function (error, data) {
-      //   //     if (error) throw error;
-      //       var flatData = transformData(ratingData);
-      //       filteredData = flatData.filter(function (d) {
-      //           return d.title == "Do schools kill creativity?";
-      //       });
-      //   //
-      //       x.domain(filteredData.map(function (d) {
-      //           return d.rate_category;
-      //       }));
-      //   //
-      //       y.domain([0, d3.max(filteredData, function (d) {
-      //           return d.count;
-      //       })]);
-      //   //
-      //
-      //
-      //       v.append("iframe")
-      //           .attr("id", "frame")
-      //           .style("width", width + "px")
-      //           .style("height", height + "px")
-      //           .style("margin-left", 100 + "px")
-      //           .style("margin-top", 50 + "px")
-      //           .style("border", 0);
-      //
-      //       v.append("v")
-      //           .attr("class", "axis axis--x")
-      //           .attr("transform", "translate(0," + height + ")")
-      //           .call(d3.axisBottom(x))
-      //           .selectAll("text")
-      //           .style("text-anchor", "end")
-      //           .attr("dx", "-.8em")
-      //           .attr("dy", ".15em")
-      //           .attr("transform", "rotate(-65)");
-      //   //
-      //       v.append("v")
-      //           .attr("class", "axis axis--y")
-      //           .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
-      //           .append("text")
-      //           .attr("transform", "rotate(-90)")
-      //           .attr("y", 75 - margin.left)
-      //           .attr("x", 0 - (height / 2))
-      //           .attr("dy", "1em")
-      //           .style("text-anchor", "middle")
-      //           .attr("fill", "#5D6971")
-      //           .text("No. of Ratings");
-      //   //
-      //       v.selectAll(".bar")
-      //           .data(filteredData)
-      //           .enter().append("rect")
-      //           .attr("x", function (d) {
-      //               return x(d.rate_category);
-      //           })
-      //           .attr("y", function (d) {
-      //               return y(d.count);
-      //           })
-      //           .attr("width", x.bandwidth())
-      //           .attr("height", function (d) {
-      //               return height - y(d.count);
-      //           })
-      //           .attr("fill", function (d) {
-      //               return colours(d.rate_category);
-      //           })
-      //           .on("mousemove", function (d) {
-      //               tooltip
-      //                   .style("left", d3.event.pageX - 50 + "px")
-      //                   .style("top", d3.event.pageY - 70 + "px")
-      //                   .style("display", "inline-block")
-      //                   .html("raterId: " + (d.rater_id) + "<br>" + "Count: " + (d.count));
-      //           })
-      //           .on("mouseout", function (d) {
-      //               tooltip.style("display", "none");
-      //           });
-      //   // });
-      // }
     </script>
 </body>
 
