@@ -410,14 +410,10 @@
                     scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
                 {
-                    key: "speaker",
-                    description: "Speaker",
-                    type: types["String"],
-                    axis: d3.axisRight()
-                        .tickFormat(function (d, i) {
-                            if (d == null) return "(null)";
-                            return i % 5 == 0 ? d.slice(0, 22) : "";
-                        })
+                    key: "duration",
+                    description: "Duration",
+                    type: types["Number"],
+                    scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
                 {
                     key: "comments",
@@ -426,15 +422,10 @@
                     scale: d3.scaleSqrt().range([innerHeight, 0])
                 },
                 {
-                    key: "eventdata",
-                    description: "Event",
-                    type: types["String"],
-                    axis: d3.axisRight()
-                        .tickFormat(function (d, i) {
-                            if (d == null) return "(null)";
-                            return i % 5 == 0 ? d.slice(0, 22) : "";
-                        })
-
+                    key: "languages",
+                    description: "Languages",
+                    type: types["Number"],
+                    scale: d3.scaleSqrt().range([innerHeight, 0])
                 }
             ];
 
