@@ -19,7 +19,7 @@
 
     <h3 style="text-align:center; font-family:Palatino;">
         <b>
-            <font color="red"> Top Topics Included are </font>
+            <font color="#e62b1e"> Top Topics Included are </font>
         </b>
     </h3>
     <h2 style="margin-left:30%;margin-right:30%;text-align:center;font-family:Palatino;">
@@ -29,7 +29,7 @@
         <p style="text-align:center; font-family:Impact;">
             <b>
                 <u>
-                    <font size="6" color="red">Top 10 Ted talks</font>
+                    <font size="6" color="#e62b1e">Top 10 Ted talks</font>
                 </u>
             </b>
         </p>
@@ -58,7 +58,7 @@
     .axis .title {
         font-size: 20px;
         transform: rotate(-21deg) translate(-5px, -6px);
-        fill: red;
+        fill: #e62b1e;
     }
 
     .axis line {
@@ -129,11 +129,25 @@
         color: white;
     }
 
-    .tooltip {
-        position: relative;
+    div.tooltip {
+        position: absolute;
+        text-align: center;
         width: 150px;
         height: 35px;
     }
+
+    div.toolTip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    /* background: lightsteelblue; */
+    /* border: 0px; */
+    /* border-radius: 8px; */
+    pointer-events: none;
+}
 
     .bartoolTip {
         position: absolute;
@@ -147,7 +161,7 @@
     }
 
     h1 {
-        text-shadow: 3px 2px red;
+        text-shadow: 3px 2px #e62b1e;
     }
 
     input[type=text] {
@@ -156,7 +170,7 @@
         align-items: center;
         padding: 12px 20px;
         margin: 8px 0;
-        color: red;
+        color: #e62b1e;
         border: none;
         text-align: center;
         font-size: 50px;
@@ -186,7 +200,7 @@
         left: 0;
         bottom: 0;
         width: 100%;
-        background-color: red;
+        background-color: #e62b1e;
         color: white;
         text-align: center;
     }
@@ -201,7 +215,7 @@
 </div>
 <div class="row">
     <div class="col-md-8" id="area3">
-        <svg width="700" height="500"></svg>
+        <svg width="960" height="500"></svg>
     </div>
     <div class="col-md-4" id="area4">
     </div>
@@ -211,7 +225,7 @@
         <a href="https://tedtalktimeline.github.io/">
             <p style="text-align:center;">
                 <u>
-                    <font size="4" color="white">https://tedtalktimeline.github.io/</font>
+                    <font size="5" color="white">https://tedtalktimeline.github.io/</font>
             </p>
         </a>
     </h4>
@@ -663,7 +677,7 @@
             }
             for (var i = 0; i < data.length; i++) {
                 if (data[i].url !== null && data[i].url !== '' && data[i].ratings !== null && data[i].ratings !== '') {
-                    embedVideo(data[i].url);
+                    // embedVideo(data[i].url);
                     drawRatingBarGraph(data[i]);
                     break;
                 }
@@ -673,14 +687,14 @@
         function embedVideo(url) {
             var margin = {
                     top: 50,
-                    right: 50,
-                    bottom: 100,
-                    left: 700
+                    right: 100,
+                    bottom: 20,
+                    left: 20
                 },
-                width = screen.width - margin.left - margin.right,
+                width = 500 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
-            var v = d3.select("#area4")
+            var v = d3.select("#area3")
                 .append("div")
                 .attr("id", "TedPreview")
                 .style("width", width + margin.left + margin.right + "px")
@@ -692,7 +706,7 @@
                 .attr("src", url)
                 .style("width", width + "px")
                 .style("height", height + "px")
-                .style("margin-left", 10 + "px")
+                .style("margin-left", 100 + "px")
                 .style("margin-top", 50 + "px")
                 .style("border", 0);
         }
@@ -700,15 +714,19 @@
         function drawRatingBarGraph(data) {
             var svg = d3.select("#area3").select("svg"),
                 margin = {
-                    top: 50,
+                    top: 20,
                     right: 20,
                     bottom: 100,
-                    left: 100
+                    left: 150
                 },
                 width = +svg.attr("width") - margin.left - margin.right,
                 height = +svg.attr("height") - margin.top - margin.bottom;
 
-            var tooltip = d3.select("#area3").append("div").attr("class", "toolTip");
+            // var tooltip = d3.select("#area3").append("div").attr("class", "tooltip");
+
+            var tooltip = d3.select("body").append("div")
+                .attr("class", "toolTip")
+
 
             var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
                 y = d3.scaleLinear().rangeRound([height, 0]);
@@ -741,16 +759,25 @@
                 .attr("dy", ".15em")
                 .attr("transform", "rotate(-65)");
 
+            g.append("text")
+                .attr("dx", "24em")
+                .attr("dy","34em")
+                .style("text-anchor", "middle")
+                .attr("fill", "white")
+                .attr("font-size", "14px")
+                .text("Rating Name");
+
             g.append("g")
                 .attr("class", "axis axis--y")
                 .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 75 - margin.left)
+                .attr("y", 75 - margin.left+20)
                 .attr("x", 0 - (height / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .attr("fill", "white")
+                .attr("font-size", "14px")
                 .text("No. of Ratings");
 
             g.selectAll(".bar")
@@ -770,11 +797,12 @@
                     return colours(d.rate_category);
                 })
                 .on("mousemove", function (d) {
-                    tooltip
-                        .style("left", d3.event.pageX - 50 + "px")
-                        .style("top", d3.event.pageY - 50 + "px")
-                        .style("display", "inline-block")
-                        .html("raterId: " + (d.rater_id) + "<br>" + "Count: " + (d.count));
+                  tooltip
+                       .style("left", d3.event.pageX - 50 + "px")
+                       .style("top", d3.event.pageY - 50 + "px")
+                       .style("display", "inline-block")
+                       .html("raterId: " + (d.rater_id) + "<br>" + "Count: " + (d.count));
+
                 })
                 .on("mouseout", function (d) {
                     tooltip.style("display", "none");
@@ -855,7 +883,7 @@
                 })
                 .curve(d3.curveBasis);
 
-            var tooltip = d3.select("#area1").append("div")
+            var tooltip = d3.select("body").append("div")
                 .attr("class", "tooltip");
 
             var svg = d3.select("#area1").append("svg")
@@ -890,8 +918,8 @@
                         .duration(700)
                         .style("opacity", 1);
                     tooltip.html(d.key)
-                        .style("left", (d3.event.pageX + 5) + "px")
-                        .style("top", (d3.event.pageY - 400) + "px");
+                        .style("left", (d3.event.pageX - 50) + "px")
+                        .style("top", (d3.event.pageY - 50) + "px");
 
                 })
                 .on('mouseout', function (d) {
