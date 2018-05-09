@@ -661,6 +661,10 @@
                 d3.select("#TedPreview").remove();
                 d3.select("#frame").remove();
             }
+            if(d3.select("#RatingBar")) {
+                d3.select("#RatingBar").remove();
+            }
+
             for (var i = 0; i < data.length; i++) {
                 if (data[i].url !== null && data[i].url !== '' && data[i].ratings !== null && data[i].ratings !== '') {
                     embedVideo(data[i].url);
@@ -691,7 +695,7 @@
                 .attr("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms")
                 .attr("src", url)
                 .style("width", 400 + "px")
-                .style("height", height + "px")
+                .style("height", 400 + "px")
                 .style("margin-left", -140 + "px")
                 .style("margin-top", 50 + "px")
                 .style("border", 0);
@@ -717,6 +721,7 @@
                 .range(["#6F257F", "#CA0D59"]);
 
             var g = svg.append("g")
+                .attr("id", "RatingBar")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var ratingData, JSONObject;
