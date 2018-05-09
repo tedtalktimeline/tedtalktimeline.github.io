@@ -201,7 +201,7 @@
 </div>
 <div class="row">
     <div class="col-md-8" id="area3">
-        <svg width="960" height="500"></svg>
+        <svg width="700" height="500"></svg>
     </div>
     <div class="col-md-4" id="area4">
     </div>
@@ -211,7 +211,7 @@
         <a href="https://tedtalktimeline.github.io/">
             <p style="text-align:center;">
                 <u>
-                    <font size="5" color="white">https://tedtalktimeline.github.io/</font>
+                    <font size="4" color="white">https://tedtalktimeline.github.io/</font>
             </p>
         </a>
     </h4>
@@ -663,7 +663,7 @@
             }
             for (var i = 0; i < data.length; i++) {
                 if (data[i].url !== null && data[i].url !== '' && data[i].ratings !== null && data[i].ratings !== '') {
-                    // embedVideo(data[i].url);
+                    embedVideo(data[i].url);
                     drawRatingBarGraph(data[i]);
                     break;
                 }
@@ -673,14 +673,14 @@
         function embedVideo(url) {
             var margin = {
                     top: 50,
-                    right: 100,
-                    bottom: 20,
-                    left: 20
+                    right: 50,
+                    bottom: 100,
+                    left: 700
                 },
-                width = 500 - margin.left - margin.right,
+                width = screen.width - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
-            var v = d3.select("#area3")
+            var v = d3.select("#area4")
                 .append("div")
                 .attr("id", "TedPreview")
                 .style("width", width + margin.left + margin.right + "px")
@@ -692,7 +692,7 @@
                 .attr("src", url)
                 .style("width", width + "px")
                 .style("height", height + "px")
-                .style("margin-left", 100 + "px")
+                .style("margin-left", 300 - width + "px")
                 .style("margin-top", 50 + "px")
                 .style("border", 0);
         }
@@ -700,10 +700,10 @@
         function drawRatingBarGraph(data) {
             var svg = d3.select("#area3").select("svg"),
                 margin = {
-                    top: 20,
+                    top: 50,
                     right: 20,
                     bottom: 100,
-                    left: 150
+                    left: 100
                 },
                 width = +svg.attr("width") - margin.left - margin.right,
                 height = +svg.attr("height") - margin.top - margin.bottom;
@@ -750,7 +750,7 @@
                 .attr("x", 0 - (height / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .attr("fill", "#5D6971")
+                .attr("fill", "white")
                 .text("No. of Ratings");
 
             g.selectAll(".bar")
