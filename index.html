@@ -19,7 +19,7 @@
 
     <h3 style="text-align:center; font-family:Palatino;">
         <b>
-            <font color="red"> Top Topics Included are </font>
+            <font color="#e62b1e"> Top Topics Included are </font>
         </b>
     </h3>
     <h2 style="margin-left:30%;margin-right:30%;text-align:center;font-family:Palatino;">
@@ -29,7 +29,7 @@
         <p style="text-align:center; font-family:Impact;">
             <b>
                 <u>
-                    <font size="6" color="red">Top 10 Ted talks</font>
+                    <font size="6" color="#e62b1e">Top 10 Ted talks</font>
                 </u>
             </b>
         </p>
@@ -58,7 +58,7 @@
     .axis .title {
         font-size: 20px;
         transform: rotate(-21deg) translate(-5px, -6px);
-        fill: red;
+        fill: #e62b1e;
     }
 
     .axis line {
@@ -136,17 +136,14 @@
     }
 
     div.toolTip {
-    position: absolute;
-    text-align: center;
-    width: 60px;
-    height: 28px;
-    padding: 2px;
-    font: 12px sans-serif;
-    /* background: lightsteelblue; */
-    /* border: 0px; */
-    /* border-radius: 8px; */
-    pointer-events: none;
-  }
+        position: absolute;
+        text-align: center;
+        width: 60px;
+        height: 28px;
+        padding: 2px;
+        font: 12px sans-serif;
+        pointer-events: none;
+    }
 
     .bartoolTip {
         position: absolute;
@@ -160,7 +157,7 @@
     }
 
     h1 {
-        text-shadow: 3px 2px red;
+        text-shadow: 3px 2px #e62b1e;
     }
 
     input[type=text] {
@@ -169,7 +166,7 @@
         align-items: center;
         padding: 12px 20px;
         margin: 8px 0;
-        color: red;
+        color: #e62b1e;
         border: none;
         text-align: center;
         font-size: 50px;
@@ -195,11 +192,11 @@
         display: inline-block;
         margin-right: 1em;
         position: relative;
-        top: 30px;
+        top: 40px;
         left: 0;
         bottom: 0;
         width: 100%;
-        background-color: red;
+        background-color: #e62b1e;
         color: white;
         text-align: center;
     }
@@ -220,6 +217,8 @@
     </div>
 </div>
 <div class="footer">
+    <br>
+    <br>
     <h4 style="text-align:center;font-family:Palatino;">Neha Bandal, Gauri Joshi
         <a href="https://tedtalktimeline.github.io/">
             <p style="text-align:center;">
@@ -674,7 +673,7 @@
                 d3.select("#TedPreview").remove();
                 d3.select("#frame").remove();
             }
-            if(d3.select("#RatingBar")) {
+            if (d3.select("#RatingBar")) {
                 d3.select("#RatingBar").remove();
             }
 
@@ -759,26 +758,26 @@
                 .attr("dy", ".15em")
                 .attr("transform", "rotate(-65)");
 
-                g.append("text")
-                    .attr("dx", "24em")
-                    .attr("dy","34em")
-                    .style("text-anchor", "middle")
-                    .attr("fill", "white")
-                    .attr("font-size", "14px")
-                    .text("Rating Name");
+            g.append("text")
+                .attr("dx", "24em")
+                .attr("dy", "34em")
+                .style("text-anchor", "middle")
+                .attr("fill", "white")
+                .attr("font-size", "14px")
+                .text("Rating Name");
 
-                g.append("g")
-                    .attr("class", "axis axis--y")
-                    .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
-                    .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 75 - margin.left-20)
-                    .attr("x", 0 - (height / 2))
-                    .attr("dy", "1em")
-                    .style("text-anchor", "middle")
-                    .attr("fill", "white")
-                    .attr("font-size", "14px")
-                    .text("No. of Ratings");
+            g.append("g")
+                .attr("class", "axis axis--y")
+                .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 75 - margin.left - 20)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .attr("fill", "white")
+                .attr("font-size", "14px")
+                .text("No. of Ratings");
 
             g.selectAll(".bar")
                 .data(flatData)
