@@ -10,12 +10,12 @@
     <h1 align="center">
         <font size="80">Ted Talk Timeline</font>
     </h1>
-    <h2 style="margin-left:20%;margin-right:20%;font-family:cursive;">
+    <h3 style="margin-left:20%;margin-right:20%;font-family:cursive;">
 
         TED started as an annual, invite-only conference in 1984, but has since morphed into a global brand. Since 2006, TED.com
         has become a hub for thought-provoking ideas delivered by some of the world's brightest minds. With more than 2,500
         talks recorded since its inception, the TED library continues to grow. Topics range from the future of the internet,
-        to living stress-free, to even a love poem for lonely prime numbers.</h2>
+        to living stress-free, to even a love poem for lonely prime numbers.</h3>
 
     <h3 style="margin-left:40%;margin-right:40%;text-align:center; font-family:Palatino;">
         <b>
@@ -25,8 +25,6 @@
     <h2 style="margin-left:30%;margin-right:30%;text-align:center;font-family:Palatino;">
         <font color="white">Architect, Artist, Designer, Engineer, Entrepreneur, Inventor, Musician, Photographer, Writer, Actor, Activist, Physicist</font>
     </h2>
-    <h4>
-    </h4>
     <a href="https://www.ted.com/playlists/171/the_most_popular_talks_of_all" style="margin-left:45%;margin-right:20%;text-align:center;font-family:Impact;">
         <b>
             <u>
@@ -51,7 +49,7 @@
     .parcoords canvas {
         opacity: 0.9;
         pointer-events: none;
-        background-image: url("TED3.jpg");
+        /* background-image: url("TED3.jpg"); */
         background-size: 1200px 600px;
     }
 
@@ -69,8 +67,8 @@
 
     .axis path {
         fill: none;
-        stroke: red;
-        stroke-width: 1px;
+        stroke: white;
+        stroke-width: 2px;
     }
 
     .axis .tick text {
@@ -130,10 +128,9 @@
     }
 
     .tooltip {
-        position: absolute;
+        position: relative;
         width: 150px;
         height: 35px;
-        pointer-events: none;
     }
 
     h1 {
@@ -167,6 +164,17 @@
         width: 100%;
         height: 100%;
     }
+    .footer {
+      position: relative;
+     left: 0;
+     bottom: 0;
+     width: 100%;
+     background-color: gray;
+     color: white;
+     text-align: center;
+  }
+
+
 </style>
 
 <div class="row">
@@ -182,7 +190,10 @@
     <div class="col-md-8" id="area4">
     </div>
 </div>
-
+<div class="footer">
+  <a href="https://tedtalktimeline.github.io/" style="text-align:center;font-family:Palatino;"><font size="4" color="white">https://tedtalktimeline.github.io/</font></a>
+  <h5 style="text-align:center;font-family:Palatino;"><font size="4" color="white">Neha Bandal<br>Gauri Joshi</font></h5>
+</div>
 <body>
     <script>
         var filteredData = [];
@@ -297,6 +308,7 @@
         function drawParallelCoordinates(key) {
             var selected = [];
 
+
             filterData = filteredData.filter(function (data) {
                 return data.occupation == key
             });
@@ -313,7 +325,7 @@
 
             var devicePixelRatio = window.devicePixelRatio || 1;
 
-            var color = d3.scaleOrdinal(d3.schemeCategory20b);
+            var color = d3.scaleOrdinal(d3.schemeCategory20c);
 
             var types = {
                 "Number": {
@@ -621,12 +633,13 @@
         }
 
         function drawBarChart(data) {
-            console.log(data[0].url);
+            console.log(data[0].ratings);
             if (d3.select("#frame")) {
                 d3.select("#TedPreview").remove();
                 d3.select("#frame").remove();
             }
-            embedVideo(data[0].url)
+            embedVideo(data[0].url);
+            // drawRatingGraph(data[0].ratings);
         }
 
         function embedVideo(url) {
@@ -715,6 +728,7 @@
 
         function buildStreamGraph(mqpdata) {
             var data = mqpdata;
+            // console.log(data);
 
             var stack = d3.stack()
                 .keys(["Architect", "Artist", "Designer", "Engineer", "Entrepreneur", "Inventor", "Musician",
@@ -744,6 +758,7 @@
             // setup axis
             var xAxis = d3.axisBottom(x);
 
+
             var y = d3.scaleLinear()
                 .domain([0, d3.max(series, function (layer) {
                     return d3.max(layer, function (d) {
@@ -752,6 +767,8 @@
                 })])
                 .range([height / 2, -100]);
 
+
+
             var color = d3.scaleOrdinal(d3.schemeCategory20);
 
             var area = d3.area()
@@ -759,6 +776,7 @@
                     return x(d.data.month);
                 })
                 .y0(function (d) {
+
                     return y(d[0]);
                 })
                 .y1(function (d) {
@@ -802,7 +820,8 @@
                         .style("opacity", 1);
                     tooltip.html(d.key)
                         .style("left", (d3.event.pageX + 5) + "px")
-                        .style("top", (d3.event.pageY - 600) + "px");
+                        .style("top", (d3.event.pageY-400) + "px");
+
                 })
                 .on('mouseout', function (d) {
                     d3.select(this).style('fill',
@@ -824,14 +843,141 @@
                         .html(function (d) {
                             return ("<input type=\"text\" value =" + selectedStream + ">")
                         })
-//                     d3.select("#the_SVG_ID").remove();
+
                     if (d3.select("#parallelSVG")) {
                         d3.select("#parallelSVG").remove();
                         d3.select("#parallelText").remove();
                     }
+
                     drawParallelCoordinates(selectedStream);
                 })
         }
+
+
+
+      //   function drawRatingGraph(ratingData) {
+      //     console.log(ratingData);
+      //     var margin = {
+      //             top: 50,
+      //             right: 600,
+      //             bottom: 20,
+      //             left: 100
+      //         },
+      //         width = screen.width / 2 - margin.left - margin.right,
+      //         height = 500 - margin.top - margin.bottom;
+      //
+      //     var v = d3.select("#area4")
+      //         .append("div")
+      //         .attr("id", "TedPreview")
+      //         .style("width", width + margin.left + margin.right + "px")
+      //         .style("height", height + margin.top + margin.bottom + "px");
+      //
+      //   var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+      //   //
+      //   var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+      //       y = d3.scaleLinear().rangeRound([height, 0]);
+      //
+      //   var colours = d3.scaleOrdinal()
+      //       .range(["#6F257F", "#CA0D59"]);
+      //
+      //   // var g = svg.append("g")
+      //   //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //
+      //   var ratingData, JSONObject;
+      //   //
+      //   function transformData(data) {
+      //       var newData = [];
+      //       // data.forEach(function (d) {
+      //           // ratingData = d.ratings;
+      //           var JSONObject = eval('(' + data + ')');
+      //           for (var i in JSONObject) {
+      //               newData.push({
+      //                   // title: d.title,
+      //                   // description: d.description,
+      //                   rater_id: +JSONObject[i]["id"],
+      //                   rate_category: JSONObject[i]["name"],
+      //                   count: +JSONObject[i]["count"]
+      //               });
+      //           }
+      //       // });
+      //       return newData;
+      //   }
+      //   //
+      //   // d3.csv("ted_main.csv", function (error, data) {
+      //   //     if (error) throw error;
+      //       var flatData = transformData(ratingData);
+      //       filteredData = flatData.filter(function (d) {
+      //           return d.title == "Do schools kill creativity?";
+      //       });
+      //   //
+      //       x.domain(filteredData.map(function (d) {
+      //           return d.rate_category;
+      //       }));
+      //   //
+      //       y.domain([0, d3.max(filteredData, function (d) {
+      //           return d.count;
+      //       })]);
+      //   //
+      //
+      //
+      //       v.append("iframe")
+      //           .attr("id", "frame")
+      //           .style("width", width + "px")
+      //           .style("height", height + "px")
+      //           .style("margin-left", 100 + "px")
+      //           .style("margin-top", 50 + "px")
+      //           .style("border", 0);
+      //
+      //       v.append("v")
+      //           .attr("class", "axis axis--x")
+      //           .attr("transform", "translate(0," + height + ")")
+      //           .call(d3.axisBottom(x))
+      //           .selectAll("text")
+      //           .style("text-anchor", "end")
+      //           .attr("dx", "-.8em")
+      //           .attr("dy", ".15em")
+      //           .attr("transform", "rotate(-65)");
+      //   //
+      //       v.append("v")
+      //           .attr("class", "axis axis--y")
+      //           .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
+      //           .append("text")
+      //           .attr("transform", "rotate(-90)")
+      //           .attr("y", 75 - margin.left)
+      //           .attr("x", 0 - (height / 2))
+      //           .attr("dy", "1em")
+      //           .style("text-anchor", "middle")
+      //           .attr("fill", "#5D6971")
+      //           .text("No. of Ratings");
+      //   //
+      //       v.selectAll(".bar")
+      //           .data(filteredData)
+      //           .enter().append("rect")
+      //           .attr("x", function (d) {
+      //               return x(d.rate_category);
+      //           })
+      //           .attr("y", function (d) {
+      //               return y(d.count);
+      //           })
+      //           .attr("width", x.bandwidth())
+      //           .attr("height", function (d) {
+      //               return height - y(d.count);
+      //           })
+      //           .attr("fill", function (d) {
+      //               return colours(d.rate_category);
+      //           })
+      //           .on("mousemove", function (d) {
+      //               tooltip
+      //                   .style("left", d3.event.pageX - 50 + "px")
+      //                   .style("top", d3.event.pageY - 70 + "px")
+      //                   .style("display", "inline-block")
+      //                   .html("raterId: " + (d.rater_id) + "<br>" + "Count: " + (d.count));
+      //           })
+      //           .on("mouseout", function (d) {
+      //               tooltip.style("display", "none");
+      //           });
+      //   // });
+      // }
     </script>
 </body>
 
