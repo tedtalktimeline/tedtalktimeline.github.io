@@ -135,6 +135,19 @@
         height: 35px;
     }
 
+    div.toolTip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    /* background: lightsteelblue; */
+    /* border: 0px; */
+    /* border-radius: 8px; */
+    pointer-events: none;
+  }
+
     .bartoolTip {
         position: absolute;
         display: none;
@@ -712,7 +725,7 @@
                 width = +svg.attr("width") - margin.left - margin.right,
                 height = +svg.attr("height") - margin.top - margin.bottom;
 
-            var tooltip = d3.select("#area3").append("div").attr("class", "toolTip");
+            var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
             var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
                 y = d3.scaleLinear().rangeRound([height, 0]);
@@ -746,17 +759,26 @@
                 .attr("dy", ".15em")
                 .attr("transform", "rotate(-65)");
 
-            g.append("g")
-                .attr("class", "axis axis--y")
-                .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 75 - margin.left)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .attr("fill", "white")
-                .text("No. of Ratings");
+                g.append("text")
+                    .attr("dx", "24em")
+                    .attr("dy","34em")
+                    .style("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .attr("font-size", "14px")
+                    .text("Rating Name");
+
+                g.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
+                    .append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 75 - margin.left-20)
+                    .attr("x", 0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .attr("font-size", "14px")
+                    .text("No. of Ratings");
 
             g.selectAll(".bar")
                 .data(flatData)
