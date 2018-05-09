@@ -669,6 +669,7 @@
             }
             if (d3.select("#RatingBar")) {
                 d3.select("#RatingBar").remove();
+                d3.select("#RatingTitle").remove();
             }
 
             var svg = d3.select("#area3").select("svg"),
@@ -730,6 +731,7 @@
                 height = +svg.attr("height") - margin.top - margin.bottom;
 
                 svg.append("foreignObject")
+                    .attr("id", "RatingTitle")
                     .attr("width", 340)
                     .attr("height", 20)
                     .html(function (d) {
