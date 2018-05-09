@@ -351,7 +351,7 @@
             var margin = {
                     top: 50,
                     right: 100,
-                    bottom: 20,
+                    bottom: 10,
                     left: 100
                 },
                 width = screen.width - margin.left - margin.right,
@@ -547,8 +547,11 @@
                 .style("fill", color);
 
             output.text(d3.tsvFormat(data.slice(0, 1000)));
+
             output.on('click', function () {
+
                 getDetails(selected);
+
             });
 
             function project(d) {
@@ -668,6 +671,17 @@
                 d3.select("#RatingBar").remove();
             }
 
+            var svg = d3.select("#area3").select("svg"),
+                margin = {
+                    top: 10,
+                    right: 20,
+                    bottom: 100,
+                    left: 100
+                },
+                width = +svg.attr("width") - margin.left - margin.right,
+                height = +svg.attr("height") - margin.top - margin.bottom;
+                  // console.log(data[0].title);
+
             for (var i = 0; i < data.length; i++) {
                 if (data[i].url !== null && data[i].url !== '' && data[i].ratings !== null && data[i].ratings !== '') {
                     embedVideo(data[i].url);
@@ -679,7 +693,7 @@
 
         function embedVideo(url) {
             var margin = {
-                    top: 50,
+                    top: 100,
                     right: 50,
                     bottom: 100,
                     left: 700
@@ -707,13 +721,23 @@
         function drawRatingBarGraph(data) {
             var svg = d3.select("#area3").select("svg"),
                 margin = {
-                    top: 50,
+                    top: 100,
                     right: 20,
                     bottom: 100,
                     left: 100
                 },
                 width = +svg.attr("width") - margin.left - margin.right,
                 height = +svg.attr("height") - margin.top - margin.bottom;
+
+                svg.append("foreignObject")
+                    .attr("width", 340)
+                    .attr("height", 20)
+                    .html(function (d) {
+                        return ("<p><font size=\"5\" color=\"#e62b1e\">"+data.title+"</font></p>")
+
+                      })
+                    .style("x", ( 100 + "px"))
+                    .style("y", (10 +"px"));
 
             var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
