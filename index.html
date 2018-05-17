@@ -79,11 +79,6 @@
         pointer-events: none;
     }
 
-    .axis.manufac_name .tick text,
-    .axis.food_group .tick text {
-        opacity: 1;
-    }
-
     .axis:hover line,
     .axis:hover path,
     .axis.active line,
@@ -116,17 +111,6 @@
         stroke: #fff;
         stroke-width: 1px;
 
-    }
-
-    pre {
-        width: 80%;
-        height: 200px;
-        margin: 30px 100px;
-        tab-size: 50;
-        font-size: 15px;
-        overflow: auto;
-        background-color: black;
-        color: white;
     }
 
     .tooltip {
@@ -200,6 +184,17 @@
         color: white;
         text-align: center;
     }
+
+    th {
+        font-size: 13px;
+    }
+
+    tr,
+    td {
+        font-size: 10px;
+        padding: 1px 4px;
+        border: 4px white;
+    }
 </style>
 
 <div class="row">
@@ -211,7 +206,7 @@
 </div>
 <div class="row">
     <div class="col-md-8" id="area3">
-        <svg width="700" height="500"></svg>
+        <svg width="700" height="600"></svg>
     </div>
     <div class="col-md-4" id="area4">
     </div>
@@ -237,16 +232,16 @@
             var newData = [];
             data.forEach(function (d) {
                 newData.push({
-                    occupation: d.key,
-                    year: d.year,
-                    view: +d.value,
                     speaker: d.main_speaker,
-                    comments: +d.comments,
                     title: d.title,
-                    url: d.url,
                     eventdata: d.event,
+                    url: d.url,
                     duration: +d.duration_min,
                     languages: +d.languages,
+                    comments: +d.comments,
+                    view: +d.value,
+                    year: d.year,
+                    occupation: d.key,
                     ratings: d.ratings
                 });
             })
@@ -278,16 +273,16 @@
                     }
                     if (flag == 0) {
                         data.push({
-                            occupation: occupationList[i],
-                            year: yearList[k],
-                            view: 0,
                             speaker: '',
-                            comments: 0,
                             title: '',
-                            url: '',
                             eventdata: '',
+                            url: '',
                             duration: 0,
                             languages: 0,
+                            comments: 0,
+                            view: 0,
+                            year: yearList[k],
+                            occupation: occupationList[i],
                             ratings: ''
                         })
                     }
@@ -339,6 +334,57 @@
             buildStreamGraph(mqpdata);
 
         })
+
+        function tabulate(data, columns) {
+
+            if (d3.select("#parallelText")) {
+                d3.select("#parallelText").remove();
+            }
+
+            var table = d3.select("#area2").append('table').attr("id", "parallelText")
+                .attr("style", "margin-left: 30px")
+                .style("border-collapse", "collapse") // <= Add this line in.
+                .style("border", "2px white");
+
+            var thead = table.append('thead');
+            var tbody = table.append('tbody');
+
+            // append the header row
+            thead.append('tr')
+                .selectAll('th')
+                .data(columns).enter()
+                .append('th')
+                .text(function (column) {
+                    return column;
+                });
+
+            // create a row for each object in the data
+            var rows = tbody.selectAll('tr')
+                .data(data)
+                .enter()
+                .append('tr')
+                .on("click", function (d) {
+                    getDetails(d);
+                });
+
+            // create a cell in each row for each column
+            var cells = rows.selectAll('td')
+                .data(function (row) {
+                    return columns.map(function (column) {
+                        return {
+                            column: column,
+                            value: row[column]
+                        };
+                    });
+                })
+                .enter()
+                .append('td')
+                .text(function (d) {
+                    return d.value;
+                });
+
+            return table;
+        }
 
         function drawParallelCoordinates(key) {
             var selected = [];
@@ -462,8 +508,6 @@
             ctx.lineWidth = 1.5;
             ctx.scale(devicePixelRatio, devicePixelRatio);
 
-            var output = d3.select("#area2").append("pre").attr("id", "parallelText");
-
             var axes = svg.selectAll(".axis")
                 .data(dimensions)
                 .enter().append("g")
@@ -546,13 +590,15 @@
             d3.selectAll(".axis.occupation .tick text")
                 .style("fill", color);
 
-            output.text(d3.tsvFormat(data.slice(0, 1000)));
+            var columns = ['speaker', 'title', 'eventdata', 'url', 'duration',
+                'languages',
+                'comments',
+                'view',
+                'year',
+                'occupation'
+            ];
 
-            output.on('click', function () {
-
-                getDetails(selected);
-
-            });
+            tabulate(data.slice(0, 1000), columns);
 
             function project(d) {
                 return dimensions.map(function (p, i) {
@@ -631,11 +677,16 @@
                 ctx.globalAlpha = d3.min([0.85 / Math.pow(selected.length, 0.3), 1]);
                 render(selected);
 
-                output.text(d3.tsvFormat(selected.slice(0, 1000)));
+                //output.text(d3.tsvFormat(selected.slice(0, 1000)));
+                var columns = ['speaker', 'title', 'eventdata', 'url', 'duration',
+                    'languages',
+                    'comments',
+                    'view',
+                    'year',
+                    'occupation'
+                ];
 
-                output.on('click', function () {
-                    getDetails(selected);
-                });
+                tabulate(selected.slice(0, 1000), columns);
             }
 
             function d3_functor(v) {
@@ -681,14 +732,10 @@
                 },
                 width = +svg.attr("width") - margin.left - margin.right,
                 height = +svg.attr("height") - margin.top - margin.bottom;
-                  // console.log(data[0].title);
 
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].url !== null && data[i].url !== '' && data[i].ratings !== null && data[i].ratings !== '') {
-                    embedVideo(data[i].url);
-                    drawRatingBarGraph(data[i]);
-                    break;
-                }
+            if (data.url !== null && data.url !== '' && data.ratings !== null && data.ratings !== '') {
+                embedVideo(data.url);
+                drawRatingBarGraph(data);
             }
         }
 
@@ -730,21 +777,21 @@
                 width = +svg.attr("width") - margin.left - margin.right,
                 height = +svg.attr("height") - margin.top - margin.bottom;
 
-                svg.append("foreignObject")
-                    .attr("id", "RatingTitle")
-                    .attr("width", 340)
-                    .attr("height", 20)
-                    .html(function (d) {
-                        return ("<p><font size=\"5\" color=\"#e62b1e\">"+data.title+"</font></p>")
+            svg.append("foreignObject")
+                .attr("id", "RatingTitle")
+                .attr("width", 340)
+                .attr("height", 20)
+                .html(function (d) {
+                    return ("<p><font size=\"5\" color=\"#e62b1e\">" + data.title + "</font></p>")
 
-                      })
-                    .style("x", ( 100 + "px"))
-                    .style("y", (10 +"px"));
+                })
+                .style("x", (100 + "px"))
+                .style("y", (10 + "px"));
 
             var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
-            var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-                y = d3.scaleLinear().rangeRound([height, 0]);
+            var x = d3.scaleLinear().range([0, width]);
+            var y = d3.scaleBand().range([height, 0]);
 
             var colours = d3.scaleOrdinal()
                 .range(["#6F257F", "#CA0D59"]);
@@ -757,57 +804,33 @@
 
             var flatData = transformBarData(data);
 
-            x.domain(flatData.map(function (d) {
-                return d.rate_category;
-            }));
-
-            y.domain([0, d3.max(flatData, function (d) {
+            x.domain([0, d3.max(flatData, function (d) {
                 return d.count;
             })]);
+
+            y.domain(flatData.map(function (d) {
+                return d.rate_category;
+            })).padding(0.1);
 
             g.append("g")
                 .attr("class", "axis axis--x")
                 .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x))
-                .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em")
-                .attr("transform", "rotate(-65)");
-
-            g.append("text")
-                .attr("dx", "24em")
-                .attr("dy", "34em")
-                .style("text-anchor", "middle")
-                .attr("fill", "white")
-                .attr("font-size", "14px")
-                .text("Rating Name");
+                .call(d3.axisBottom(x).ticks(5).tickSizeInner([-height]));
 
             g.append("g")
                 .attr("class", "axis axis--y")
-                .call(d3.axisLeft(y).ticks(5).tickSizeInner([-width]))
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 75 - margin.left - 20)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .attr("fill", "white")
-                .attr("font-size", "14px")
-                .text("No. of Ratings");
+                .call(d3.axisLeft(y));
 
             g.selectAll(".bar")
                 .data(flatData)
                 .enter().append("rect")
-                .attr("x", function (d) {
-                    return x(d.rate_category);
-                })
+                .attr("x", 0)
+                .attr("height", y.bandwidth())
                 .attr("y", function (d) {
-                    return y(d.count);
+                    return y(d.rate_category);
                 })
-                .attr("width", x.bandwidth())
-                .attr("height", function (d) {
-                    return height - y(d.count);
+                .attr("width", function (d) {
+                    return x(d.count);
                 })
                 .attr("fill", function (d) {
                     return colours(d.rate_category);
@@ -842,8 +865,6 @@
 
         function buildStreamGraph(mqpdata) {
             var data = mqpdata;
-            // console.log(data);
-
             var stack = d3.stack()
                 .keys(["Architect", "Artist", "Designer", "Engineer", "Entrepreneur", "Inventor", "Musician",
                     "Photographer", "Writer", "Actor", "Activist", "Physicist"
