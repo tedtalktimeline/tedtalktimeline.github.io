@@ -2,16 +2,40 @@
 
 **Created By:**
 
- *Neha Bandal*
- 
  *Gauri Joshi*
- 
- **Parallel Coordinate**
- 
- *[Details on Demand](http://bl.ocks.org/nehabandal/db36125382760848efd11ddeef1009e1/1dc0ed713f4a7530c6a98ecab702cd39a2694fed)*
- 
-  **Bar Chart**
+
+ *Neha Bandal*
   
- *[Ratings Distribution](https://bl.ocks.org/jo6gauri/7b011dea8417e5f995ed685899a84e25)*
+ **Instructions**
+
+ *1. If you are running this code on your local server you will need to install http-server on your machine. If you have that installed already skip to second step. Use below command to install server.
+
+
+  **npm install http-server -g**
+
+
+ [Reference](https://www.npmjs.com/package/http-server)
+
+
+
+ *2. Clone this repository using below command
+
+
+ **git clone https://github.com/tedtalktimeline/tedtalktimeline.github.io.git**
+
+
+
+*3. Go inside tedtalktimeline directory.
+
+
+
+*4. Start http-server using below command
+
+**http-server .**
+
+
+
+*5. Open any browser and go to
+http://localhost:8080/ 
 
  
